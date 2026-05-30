@@ -96,23 +96,20 @@ document.addEventListener("DOMContentLoaded", () => {
     tl.to({}, { duration: 0.3 });
 
     // Cierre en círculo
-    tl.to(".preloader", {
-        clipPath: "circle(10% at 50% 50%)",
+   tl.to(".preloader", {
+        y: "-100vh", // En lugar de "100vh" positivo (abajo), usamos negativo para que suba.
+        borderBottomLeftRadius: "50% 15vh", // Curvamos sutilmente la parte baja al subir
+        borderBottomRightRadius: "50% 15vh",
         duration: 1.2,
-        ease: "power3.inOut"
-    });
-
-    // Caída y limpieza
-    tl.to(".preloader", {
-        y: "100vh",
-        duration: 0.8,
-        ease: "power2.in",
+        ease: "power3.inOut",
         onComplete: () => {
             document.getElementById("preloader").remove();
             document.body.style.overflow = "auto";
-            initHeroAnimation();
+            
+            // Asegúrate de que aquí disparas la animación de la página principal
+            initHeroAnimation(); 
         }
-    }, "-=0.2");
+    });
 });
 
 function initHeroAnimation() {
