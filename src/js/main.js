@@ -211,7 +211,7 @@ function initStorytellingIntro() {
         scrollTrigger: {
             trigger: "#story-intro",
             start: "top top", // Inicia cuando el section llega al tope de la pantalla
-            end: "+=250%",    // Dura 2.5 veces el alto de la pantalla (más tiempo de scroll)
+            end: "+=300%",    // Dura 2.5 veces el alto de la pantalla (más tiempo de scroll)
             pin: true,        // Pineamos la sección
             scrub: 1.2,       // Scrub suave
         }
@@ -222,6 +222,12 @@ function initStorytellingIntro() {
         { opacity: 0, scale: 0.9, y: 30 },
         { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" }
     )
+
+    .to(".intro-img", { 
+        y: "-450vh", // Hacemos que viajen mucho hacia arriba para cruzar toda la pantalla
+        duration: 8, // Le damos mucho "peso" en la línea de tiempo
+        ease: "none" // En scrub, "none" evita acelerones raros
+    }, "+=0.5")
 
     // Fase 2: Imágenes suben con parallax por encima del texto
     // Se desplazan en Y negativas (hacia arriba)
