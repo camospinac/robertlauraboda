@@ -140,6 +140,7 @@ body {
 .time-box span {
     font-size: 1.5rem;
     font-weight: 300;
+    font-variant-numeric: tabular-nums;
 }
 
 .time-box small {
