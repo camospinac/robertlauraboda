@@ -206,6 +206,11 @@ function initStorytellingIntro() {
     // Limpiamos el fondo del section para que el body se vea
     gsap.set("#story-intro", { backgroundColor: "transparent" });
 
+    gsap.set(".img-1", { rotation: -6 });
+    gsap.set(".img-2", { rotation: 4 });
+    gsap.set(".img-3", { rotation: -5 });
+    gsap.set(".img-4", { rotation: 5 });
+
     // 2. Timeline principal con scrub y PIN para centrar el texto
     const introTl = gsap.timeline({
         scrollTrigger: {
