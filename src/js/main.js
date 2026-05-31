@@ -1,3 +1,5 @@
+gsap.registerPlugin(ScrollTrigger);
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const textElement = document.getElementById("welcome-text");
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tl.to({}, { duration: 0.3 });
 
     // Cierre en círculo
-   tl.to(".preloader", {
+    tl.to(".preloader", {
         y: "-100vh", // En lugar de "100vh" positivo (abajo), usamos negativo para que suba.
         borderBottomLeftRadius: "50% 15vh", // Curvamos sutilmente la parte baja al subir
         borderBottomRightRadius: "50% 15vh",
@@ -104,9 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
         onComplete: () => {
             document.getElementById("preloader").remove();
             document.body.style.overflow = "auto";
-            
+
             // Asegúrate de que aquí disparas la animación de la página principal
-            initHeroAnimation(); 
+            initHeroAnimation();
+
         }
     });
 });
@@ -117,28 +120,29 @@ function initHeroAnimation() {
     const tl = gsap.timeline({ delay: 0.3 });
 
     // 1. Sube Robert y Laura casi al mismo tiempo (stagger de 0.1s para dinamismo)
-    tl.to(["#name-r", "#name-l"], { 
-        y: "0%", 
-        duration: 1.2, 
-        ease: "power4.out", 
-        stagger: 0.1 
+    tl.to(["#name-r", "#name-l"], {
+        y: "0%",
+        duration: 1.2,
+        ease: "power4.out",
+        stagger: 0.1
     })
-    
-    // 2. Aparece el ampersand en el centro sutilmente
-    .fromTo("#amp", 
-        { opacity: 0, scale: 0.8 }, 
-        { opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.5)" }, 
-        "-=0.9" // Se adelanta para aparecer mientras los nombres aún están subiendo
-    );
+
+        // 2. Aparece el ampersand en el centro sutilmente
+        .fromTo("#amp",
+            { opacity: 0, scale: 0.8 },
+            { opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.5)" },
+            "-=0.9" // Se adelanta para aparecer mientras los nombres aún están subiendo
+        );
 
     // 3. Aparecen los demás elementos (Top y Bottom)
-    gsap.fromTo(".hero-top, .hero-bottom", 
-        { opacity: 0, y: 20 }, 
+    gsap.fromTo(".hero-top, .hero-bottom",
+        { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 1, ease: "power2.out" },
         "-=0.5"
     );
 
     startCountdown();
+    initStorytellingIntro();
 }
 
 // --- LOGICA DEL AUDIO ---
@@ -162,7 +166,6 @@ audioBtn.addEventListener("click", () => {
     gsap.fromTo(audioBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: "back.out(2)" });
 });
 
-// --- LOGICA DEL CONTADOR ---
 function startCountdown() {
     const targetDate = new Date("October 10, 2026 15:00:00").getTime(); // Ajusta la hora
 
@@ -186,4 +189,44 @@ function startCountdown() {
         document.getElementById("cd-mins").innerText = minutes.toString().padStart(2, '0');
         document.getElementById("cd-secs").innerText = seconds.toString().padStart(2, '0');
     }, 1000);
+}
+
+function initStorytellingIntro() {
+    // 1. Cambio sutil de color de fondo desde el Hero al Story Intro
+    gsap.to("body", {
+        backgroundColor: "#95A37D", // Color verde oliva de la intro
+        scrollTrigger: {
+            trigger: "#story-intro",
+            start: "top 70%", // Comienza la transición antes de que llegue arriba
+            end: "top 20%",
+            scrub: 1,
+        }
+    });
+
+    // Limpiamos el fondo del section para que el body se vea
+    gsap.set("#story-intro", { backgroundColor: "transparent" });
+
+    // 2. Timeline principal con scrub y PIN para centrar el texto
+    const introTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#story-intro",
+            start: "top top", // Inicia cuando el section llega al tope de la pantalla
+            end: "+=250%",    // Dura 2.5 veces el alto de la pantalla (más tiempo de scroll)
+            pin: true,        // Pineamos la sección
+            scrub: 1.2,       // Scrub suave
+        }
+    });
+
+    // Fase 1: Aparece el texto elegantemente centrado
+    introTl.fromTo(".intro-text",
+        { opacity: 0, scale: 0.9, y: 30 },
+        { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" }
+    )
+
+    // Fase 2: Imágenes suben con parallax por encima del texto
+    // Se desplazan en Y negativas (hacia arriba)
+    .to(".img-1", { y: "-180vh", rotation: -12, duration: 3.5, ease: "none" }, "+=0.5")
+    .to(".img-2", { y: "-190vh", rotation: 10, duration: 4, ease: "none" }, "<0.2")
+    .to(".img-3", { y: "-160vh", rotation: 15, duration: 3.2, ease: "none" }, "<0.1")
+    .to(".img-4", { y: "-170vh", rotation: -8, duration: 3.8, ease: "none" }, "<0.1");
 }

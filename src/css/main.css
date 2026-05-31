@@ -298,3 +298,72 @@ body {
     position: relative;
     z-index: 1; /* Esto levanta todo el contenido por encima del papel texturizado */
 }
+
+
+
+
+
+
+
+/* --- STORYTELLING INTRO --- */
+.story-intro {
+    position: relative;
+    height: 100vh; /* Fijo para el efecto pin */
+    background-color: transparent; /* GSAP animará el color de fondo del body */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+    z-index: 2; /* Pasa por encima de la Hero section al hacer scroll */
+}
+
+.intro-content {
+    position: relative;
+    width: 100%;
+    height: 100%; /* Ocupa todo el contenedor para usar absolute positioning */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intro-text {
+    /* Mantenemos tu fuente Domine para conectar con los nombres */
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    color: #1A2412; /* Un verde oscuro casi negro (Grafito botánico) para contraste premium */
+    line-height: 1.4;
+    position: absolute; /* Centrado absoluto en la pantalla pineada */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10; /* Texto debajo de las imágenes (las imgs tendrán z-index superior) */
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Galería tipo collage */
+.intro-gallery {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20; /* Las imágenes pasan por encima del texto */
+    pointer-events: none; /* Evita que bloqueen posibles clics en el texto */
+}
+
+.intro-img {
+    position: absolute;
+    border-radius: 8px; /* Borde un poco más curvo y moderno */
+    box-shadow: 0 25px 50px rgba(26, 36, 18, 0.25); /* Sombra elegante 3D profunda */
+    object-fit: cover;
+    will-change: transform; /* Optimiza rendimiento de animación GSAP */
+}
+
+/* Posicionamiento asimétrico: inician debajo de la pantalla (>100%) para el parallax */
+.img-1 { width: 35%; max-width: 200px; top: 110%; left: 5%; }
+.img-2 { width: 45%; max-width: 260px; top: 125%; right: 5%; }
+.img-3 { width: 30%; max-width: 180px; top: 135%; left: 35%; }
+.img-4 { width: 40%; max-width: 240px; top: 115%; right: 35%; }
