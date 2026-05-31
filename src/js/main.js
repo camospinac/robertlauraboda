@@ -143,6 +143,8 @@ function initHeroAnimation() {
 
     startCountdown();
     initStorytellingIntro();
+    initChapters();
+    initChapter2();
 }
 
 // --- LOGICA DEL AUDIO ---
@@ -193,15 +195,19 @@ function startCountdown() {
 
 function initStorytellingIntro() {
     // 1. Cambio sutil de color de fondo desde el Hero al Story Intro
-    gsap.to("body", {
-        backgroundColor: "#95A37D", // Color verde oliva de la intro
-        scrollTrigger: {
-            trigger: "#story-intro",
-            start: "top 70%", // Comienza la transición antes de que llegue arriba
-            end: "top 20%",
-            scrub: 1,
+    // Usamos fromTo para que GSAP sepa exactamente los colores en ambos sentidos (ida y vuelta)
+    gsap.fromTo("body", 
+        { backgroundColor: "#F4F6F0" }, // Color del Hero
+        {
+            backgroundColor: "#95A37D", // Color verde oliva de la intro
+            scrollTrigger: {
+                trigger: "#story-intro",
+                start: "top 90%", // Comienza casi apenas asoma la sección
+                end: "top 10%",   // Termina cuando ya casi cubre toda la pantalla
+                scrub: true,      // Hace que dependa totalmente de la posición del scroll
+            }
         }
-    });
+    );
 
     // Limpiamos el fondo del section para que el body se vea
     gsap.set("#story-intro", { backgroundColor: "transparent" });
@@ -240,4 +246,137 @@ function initStorytellingIntro() {
     .to(".img-2", { rotation: 6, duration: 8 }, "<")
     .to(".img-3", { rotation: -5, duration: 8 }, "<")
     .to(".img-4", { rotation: 9, duration: 8 }, "<");
+}
+
+function initChapters() {
+    // 1. Transición de fondo: De Verde a Claro
+    // Usamos fromTo para garantizar que recuerde el verde al devolverse
+    gsap.fromTo("body", 
+        { backgroundColor: "#95A37D" }, // El verde que venía de la sección anterior
+        {
+            backgroundColor: "#F4F6F0", // Color claro (blanco hueso)
+            scrollTrigger: {
+                trigger: "#chapter-1",
+                start: "top 90%", // Una ventana de transición bien grande para máxima suavidad
+                end: "top 10%",
+                scrub: true,
+            }
+        }
+    );
+
+    // Aseguramos que la sección no tenga un fondo fijo tapando el body
+    gsap.set("#chapter-1", { backgroundColor: "transparent" });
+
+    // Rotaciones iniciales para las fotos
+    gsap.set(".c1-img-1", { rotation: -4 });
+    gsap.set(".c1-img-2", { rotation: 5 });
+
+    // 2. Animación del Capítulo 1 con PIN (Textos y Fotos)
+    const c1Tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#chapter-1",
+            start: "top top", // Arranca cuando llega al top
+            end: "+=200%",    // Dura 2 veces el alto de la pantalla (pin duration)
+            pin: true,        // Fundamental para el efecto que buscas
+            scrub: 1.2        // Sensibilidad suave
+        }
+    });
+
+    // El texto entra flotando suavemente desde abajo al centro
+    c1Tl.fromTo("#chapter-1 .chapter-text-box",
+        { opacity: 0, scale: 0.9, y: 30 },
+        { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" }
+    )
+    
+    // Las fotos viajan arriba pasando por encima del texto (parallax completo)
+    .to("#chapter-1 .chap-img", { 
+        y: "-250vh", // Distancia larga para que crucen toda la pantalla
+        duration: 6, 
+        ease: "none" 
+    }, "+=0.5")
+
+    // Rotación sutil mientras viajan (para darles vida)
+    .to("#chapter-1 .c1-img-1", { rotation: -8, duration: 6 }, "<")
+    .to("#chapter-1 .c1-img-2", { rotation: 8, duration: 6 }, "<");
+}
+
+
+// ==========================================
+// UTILIDAD: Cortador de palabras
+// ==========================================
+function wrapWords(selector) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+        const words = el.innerText.split(' ');
+        el.innerHTML = '';
+        words.forEach(word => {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.innerText = word + ' '; // Añade el espacio de vuelta
+            el.appendChild(span);
+        });
+    });
+}
+
+// ==========================================
+// INICIALIZADOR CAPÍTULO 2
+// ==========================================
+
+
+function initChapter2() {
+    // 1. Ejecutamos el cortador de palabras para este párrafo
+    wrapWords("#chapter-2 .split-text-target");
+
+    // 2. Transición de fondo: De Claro a Verde Oliva (usando fromTo y ventana larga)
+    gsap.fromTo("body", 
+        { backgroundColor: "#F4F6F0" },
+        {
+            backgroundColor: "#95A37D",
+            scrollTrigger: {
+                trigger: "#chapter-2",
+                start: "top 90%",
+                end: "top 10%",
+                scrub: true,
+            }
+        }
+    );
+
+    gsap.set("#chapter-2", { backgroundColor: "transparent" });
+
+    // Fijamos las fotos fuera de la pantalla abajo (y: "120vh") y listas para subir al centro (y: 0)
+    gsap.set(".c2-img-1", { y: "120vh", xPercent: -50, yPercent: -50, rotation: -12, opacity: 1, scale: 1 });
+    gsap.set(".c2-img-2", { y: "120vh", xPercent: -50, yPercent: -50, rotation: 12, opacity: 1, scale: 1 });
+
+    // 3. Timeline del Capítulo 2
+    const c2Tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#chapter-2",
+            start: "top top",
+            end: "+=300%", // Ampliamos el scroll para disfrutar el efecto
+            pin: true,
+            scrub: 1.2
+        }
+    });
+
+    // Fase 1: Cascada de palabras
+    c2Tl.fromTo("#chapter-2 .word",
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 4, ease: "power1.out" }
+    )
+
+    // Fase 2: Sube la primera foto desde abajo y se frena en el centro
+    .to(".c2-img-1", { 
+        y: "0vh", 
+        rotation: -4, // Se acomoda suavemente con este giro
+        duration: 5, 
+        ease: "power2.out" // Frena suavemente
+    }, "+=0.5") 
+    
+    // Fase 3: Sube la segunda foto por la misma ruta y se apila
+    .to(".c2-img-2", { 
+        y: "0vh", 
+        rotation: 6, // Giro inverso
+        duration: 5, 
+        ease: "power2.out" 
+    }, "-=1.5"); // Empieza a subir un poco antes de que la primera termine, solapándose perfecto
 }
