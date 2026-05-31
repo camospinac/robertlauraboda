@@ -224,15 +224,15 @@ function initStorytellingIntro() {
     )
 
     .to(".intro-img", { 
-        y: "-450vh", // Hacemos que viajen mucho hacia arriba para cruzar toda la pantalla
+        y: "-300vh", // Hacemos que viajen mucho hacia arriba para cruzar toda la pantalla
         duration: 8, // Le damos mucho "peso" en la línea de tiempo
         ease: "none" // En scrub, "none" evita acelerones raros
     }, "+=0.5")
 
     // Fase 2: Imágenes suben con parallax por encima del texto
     // Se desplazan en Y negativas (hacia arriba)
-    .to(".img-1", { y: "-180vh", rotation: -12, duration: 3.5, ease: "none" }, "+=0.5")
-    .to(".img-2", { y: "-190vh", rotation: 10, duration: 4, ease: "none" }, "<0.2")
-    .to(".img-3", { y: "-160vh", rotation: 15, duration: 3.2, ease: "none" }, "<0.1")
-    .to(".img-4", { y: "-170vh", rotation: -8, duration: 3.8, ease: "none" }, "<0.1");
+   .to(".img-1", { rotation: -8, duration: 8 }, "<")
+    .to(".img-2", { rotation: 6, duration: 8 }, "<")
+    .to(".img-3", { rotation: -5, duration: 8 }, "<")
+    .to(".img-4", { rotation: 9, duration: 8 }, "<");
 }
