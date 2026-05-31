@@ -6,8 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Hola,",
         "el mejor capítulo",
         "de nuestras vidas",
-        "está por comenzar",
-        "..."
+        "está por comenzar"
     ];
 
     function splitTextToChars(text) {
@@ -113,27 +112,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initHeroAnimation() {
-    // 1. Hacemos visible el main
     gsap.set(".main-content", { autoAlpha: 1 });
 
-    // 2. Animamos los elementos (De adentro hacia afuera)
-    gsap.fromTo(".hero-element",
-        {
-            scale: 0.8,
-            opacity: 0,
-            y: 20
-        },
-        {
-            scale: 1,
-            opacity: 1,
-            y: 0,
-            duration: 1.5,
-            stagger: 0.3, // Entra primero el top, luego el centro, luego el bottom
-            ease: "back.out(1.2)" // Efecto elástico muy premium y sutil
-        }
+    const tl = gsap.timeline({ delay: 0.3 });
+
+    // 1. Sube Robert y Laura casi al mismo tiempo (stagger de 0.1s para dinamismo)
+    tl.to(["#name-r", "#name-l"], { 
+        y: "0%", 
+        duration: 1.2, 
+        ease: "power4.out", 
+        stagger: 0.1 
+    })
+    
+    // 2. Aparece el ampersand en el centro sutilmente
+    .fromTo("#amp", 
+        { opacity: 0, scale: 0.8 }, 
+        { opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.5)" }, 
+        "-=0.9" // Se adelanta para aparecer mientras los nombres aún están subiendo
     );
 
-    // 3. Inicializamos el contador
+    // 3. Aparecen los demás elementos (Top y Bottom)
+    gsap.fromTo(".hero-top, .hero-bottom", 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 1, ease: "power2.out" },
+        "-=0.5"
+    );
+
     startCountdown();
 }
 
@@ -146,9 +150,10 @@ let isPlaying = false;
 audioBtn.addEventListener("click", () => {
     if (isPlaying) {
         audioFile.pause();
+        audioBtn.classList.add("is-muted");
     } else {
         audioFile.play();
-        // Ocultamos la alerta una vez que interactúan
+        audioBtn.classList.remove("is-muted");
         if (audioAlert) audioAlert.style.display = "none";
     }
     isPlaying = !isPlaying;
@@ -159,7 +164,7 @@ audioBtn.addEventListener("click", () => {
 
 // --- LOGICA DEL CONTADOR ---
 function startCountdown() {
-    const targetDate = new Date("October 13, 2026 15:00:00").getTime(); // Ajusta la hora
+    const targetDate = new Date("October 10, 2026 15:00:00").getTime(); // Ajusta la hora
 
     const interval = setInterval(() => {
         const now = new Date().getTime();

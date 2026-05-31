@@ -15,9 +15,21 @@ body {
   Asegúrate de descargar la fuente y ponerla en una carpeta fonts/
 */
 @font-face {
-    font-family: 'Ethereal';
+    font-family: 'Domine';
     src: url('../assets/fonts/Domine-Regular.ttf    ') format('truetype');
     font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BlackSignature';
+    src: url('../assets/fonts/Robert/BlackSignature.otf') format('opentype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'High_Empathy';
+    src: url('../assets/fonts/Laura/High_Empathy.otf') format('opentype');
     font-style: normal;
 }
 
@@ -47,7 +59,7 @@ body {
 
 /* Tipografía de lujo */
 .ethereal-font {
-    font-family: 'Ethereal', serif;
+    font-family: 'Domine', serif;
     color: #FFFFFF;
     font-size: clamp(1.6rem, 6vw, 2.8rem);
     text-align: center;
@@ -102,19 +114,13 @@ body {
     color: #4A5D23; /* Verde Oliva Oscuro para los textos pequeños */
 }
 
-/* Título Principal */
-.title-names {
-    color: #1A1A1A; /* Grafito elegante */
-    font-size: 3.5rem;
-    line-height: 1.1;
-    margin: 0;
-}
-
 .subtitle, .location-date {
-    font-family: 'Montserrat', sans-serif; /* Sugiero una sans-serif limpia para contrastar */
-    font-size: 0.9rem;
-    letter-spacing: 0.15em;
     text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem; /* Subimos de 0.9 a 1.1 */
+    letter-spacing: 0.2em; /* Un poco más de espacio entre letras para que respire */
+    text-transform: uppercase;
+    font-weight: 500; /* Le da un pelín más de cuerpo */
 }
 
 /* --- CONTADOR --- */
@@ -210,4 +216,84 @@ body {
     gap: 20px;
     margin-top: 15px;
     width: 100%;
+}
+
+.mute-path {
+    stroke-dasharray: 29; /* Longitud aproximada de la diagonal */
+    stroke-dashoffset: 29; /* Oculta */
+    transition: stroke-dashoffset 0.4s ease-in-out; /* Animación fluida al cambiar */
+}
+
+/* Esta clase se la pondremos con JS cuando esté en pausa */
+.is-muted .mute-path {
+    stroke-dashoffset: 0; /* Se dibuja */
+}
+
+.title-names {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Espacio respirable entre las palabras */
+    width: 100%;
+}
+
+/* Fuente Serif estructurada */
+.robert-font {
+    font-family: 'BlackSignature', serif;
+    font-size: clamp(2rem, 8vw, 4.5rem);
+    color: #1A1A1A;
+}
+
+/* Fuente Manuscrita / Script delicada */
+.laura-font {
+    font-family: 'High_Empathy', cursive; /* Reemplaza por la que elijas */
+    font-size: clamp(2.8rem, 10vw, 5.5rem); /* Ligeramente más grande para compensar el peso visual */
+    color: #1A1A1A;
+}
+
+/* El puente visual */
+.ampersand-inline {
+    font-family: 'High_Empathy', cursive;
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    color: #95A37D; /* El toque verde oliva que aporta el color sin robar protagonismo */
+    opacity: 0; /* Preparado para la animación */
+}
+
+
+.name-wrapper {
+    overflow: hidden;
+    padding: 12px 28px; 
+    margin: -12px -28px;
+}
+
+.name-block {
+    display: block;
+    transform: translateY(110%);
+    line-height: 1.2;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Ruido SVG codificado en Data URI (Super ligero) */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    
+    /* Control de intensidad */
+    opacity: 0.3; 
+    
+    /* Crucial: Esto hace que la textura sea "fantasma" y no bloquee clics o selecciones de texto */
+    pointer-events: none; 
+    
+    /* Lo mandamos al fondo de esta sección */
+    z-index: 0; 
+}
+
+.hero-element {
+    position: relative;
+    z-index: 1; /* Esto levanta todo el contenido por encima del papel texturizado */
 }
