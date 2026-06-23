@@ -1,7 +1,6 @@
 gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const textElement = document.getElementById("welcome-text");
 
     const textGroups = [
@@ -10,28 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "de nuestras vidas",
         "está por comenzar"
     ];
-
-    function splitTextToChars(text) {
-        textElement.innerHTML = "";
-        text.split("").forEach(char => {
-            const span = document.createElement("span");
-            span.classList.add("char");
-            if (char === " ") {
-                span.classList.add("space");
-                span.innerHTML = "&nbsp;";
-            } else {
-                span.innerText = char;
-            }
-            textElement.appendChild(span);
-        });
-    }
+    gsap.set(textElement, { opacity: 0, y: 10 });
 
     const tl = gsap.timeline();
-
-
-    //// stop 
-
-
     const paths = document.querySelectorAll(".draw-path");
     paths.forEach(path => {
         const length = path.getTotalLength();
@@ -41,75 +21,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Animamos el trazo continuo (Single Line Draw)
     tl.to(".draw-path", {
         strokeDashoffset: 0,
-        duration: 2.5, // Le subí 0.5s porque la ruta matemática ahora es mucho más larga
+        duration: 2.5,
         ease: "power2.inOut"
-    })
-        .to({}, { duration: 0.5 });
+    }).to({}, { duration: 0.3 });
 
     textGroups.forEach((group, index) => {
         const isLast = index === textGroups.length - 1;
 
-        // ✅ .call() ejecuta la función EN TIEMPO DE REPRODUCCIÓN, no de registro
-        tl.call(() => splitTextToChars(group));
-
-        // ✅ Usamos una función flecha para que GSAP resuelva ".char" en el momento justo
         tl.call(() => {
-            const chars = document.querySelectorAll(".char");
-            gsap.set(chars, { opacity: 0 }); // Garantizamos estado inicial limpio
-
-            gsap.to(chars, {
-                opacity: 1,
-                stagger: 0.06,
-                duration: 0.1,
-                ease: "none"
-            });
+            textElement.innerText = group;
         });
 
-        // Pausa para que la animación de entrada termine + tiempo de lectura
-        // El grupo más largo tiene ~30 chars × 0.06s stagger = ~1.8s, usamos 2.5s de margen
-        tl.to({}, { duration: isLast ? 3.2 : 2.8 });
-
-        // Salida: fade out
-        tl.call(() => {
-            const chars = document.querySelectorAll(".char");
-            gsap.to(chars, {
-                opacity: 0,
-                duration: isLast ? 0.6 : 0.4,
-                ease: "power2.out"
-            });
+        tl.to(textElement, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out"
         });
 
-        // Pausa post-salida
-        tl.to({}, { duration: isLast ? 1.0 : 0.5 });
+        tl.to({}, { duration: isLast ? 2.5 : 2.0 });
+
+        tl.to(textElement, {
+            opacity: 0,
+            y: -10,
+            duration: 0.4,
+            ease: "power2.in"
+        });
+
+        tl.to({}, { duration: 0.3 });
     });
-
 
     tl.to(".svg-container", {
         opacity: 0,
-        y: -20, // Se elevan sutilmente 20px mientras desaparecen
+        y: -20,
         duration: 0.8,
         ease: "power2.out"
     });
-    // Pequeña pausa de respiro antes de que el círculo te devore la pantalla
-    tl.to({}, { duration: 0.3 });
 
-    // Cierre en círculo
     tl.to(".preloader", {
-        y: "-100vh", // En lugar de "100vh" positivo (abajo), usamos negativo para que suba.
-        borderBottomLeftRadius: "50% 15vh", // Curvamos sutilmente la parte baja al subir
+        y: "-100vh",
+        borderBottomLeftRadius: "50% 15vh",
         borderBottomRightRadius: "50% 15vh",
         duration: 1.2,
         ease: "power3.inOut",
         onComplete: () => {
             document.getElementById("preloader").remove();
             document.body.style.overflow = "auto";
-
-            // Asegúrate de que aquí disparas la animación de la página principal
+            
             initHeroAnimation();
-
         }
     });
 });
@@ -117,37 +78,87 @@ document.addEventListener("DOMContentLoaded", () => {
 function initHeroAnimation() {
     gsap.set(".main-content", { autoAlpha: 1 });
 
-    const tl = gsap.timeline({ delay: 0.3 });
+    const tl = gsap.timeline({ delay: 0.2 });
 
-    // 1. Sube Robert y Laura casi al mismo tiempo (stagger de 0.1s para dinamismo)
     tl.to(["#name-r", "#name-l"], {
         y: "0%",
-        duration: 1.2,
+        duration: 1.4,
         ease: "power4.out",
-        stagger: 0.1
+        stagger: 0.12
     })
 
-        // 2. Aparece el ampersand en el centro sutilmente
-        .fromTo("#amp",
-            { opacity: 0, scale: 0.8 },
-            { opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.5)" },
-            "-=0.9" // Se adelanta para aparecer mientras los nombres aún están subiendo
-        );
+    .fromTo("#amp",
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" },
+        "-=1.0"
+    );
 
-    // 3. Aparecen los demás elementos (Top y Bottom)
     gsap.fromTo(".hero-top, .hero-bottom",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1, ease: "power2.out" },
-        "-=0.5"
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.6 }
     );
 
     startCountdown();
-    initStorytellingIntro();
-    initChapters();
-    initChapter2();
+    initEditorialSection();
+    initCarouselSection();
+    initDetailsSection();
 }
 
-// --- LOGICA DEL AUDIO ---
+function initEditorialSection() {
+    gsap.to("body", {
+        backgroundColor: "#FFFFFF",
+        scrollTrigger: {
+            trigger: "#story-editorial",
+            start: "top 80%",
+            end: "top 20%",
+            scrub: true
+        }
+    });
+
+    gsap.to(".line-right", {
+        xPercent: 20,
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#story-editorial",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+        }
+    });
+
+    gsap.to(".line-left", {
+        xPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#story-editorial",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+        }
+    });
+
+    const photosConfig = [
+        { selector: ".photo-1", yPercent: -40 },
+        { selector: ".photo-2", yPercent: -120 },
+        { selector: ".photo-3", yPercent: -50 },
+        { selector: ".photo-4", yPercent: -140 },
+        { selector: ".photo-5", yPercent: -70 }
+    ];
+
+    photosConfig.forEach(photo => {
+        gsap.to(photo.selector, {
+            yPercent: photo.yPercent,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#story-editorial",
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1.2
+            }
+        });
+    });
+}
+
 const audioBtn = document.getElementById("audio-control");
 const audioFile = document.getElementById("bg-music");
 const audioAlert = document.getElementById("audio-alert");
@@ -164,12 +175,11 @@ audioBtn.addEventListener("click", () => {
     }
     isPlaying = !isPlaying;
 
-    // Le damos un pequeño efecto visual al botón al hacer clic
-    gsap.fromTo(audioBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: "back.out(2)" });
+    gsap.fromTo(audioBtn, { scale: 0.9 }, { scale: 1, duration: 0.3, ease: "power2.out" });
 });
 
 function startCountdown() {
-    const targetDate = new Date("October 10, 2026 15:00:00").getTime(); // Ajusta la hora
+    const targetDate = new Date("October 10, 2026 15:00:00").getTime();
 
     const interval = setInterval(() => {
         const now = new Date().getTime();
@@ -177,7 +187,7 @@ function startCountdown() {
 
         if (distance < 0) {
             clearInterval(interval);
-            return; // Boda en curso o ya pasó
+            return;
         }
 
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -185,7 +195,6 @@ function startCountdown() {
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Formateamos para que siempre tenga 2 dígitos (ej. 09 en vez de 9)
         document.getElementById("cd-days").innerText = days.toString().padStart(2, '0');
         document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
         document.getElementById("cd-mins").innerText = minutes.toString().padStart(2, '0');
@@ -193,190 +202,86 @@ function startCountdown() {
     }, 1000);
 }
 
-function initStorytellingIntro() {
-    // 1. Cambio sutil de color de fondo desde el Hero al Story Intro
-    // Usamos fromTo para que GSAP sepa exactamente los colores en ambos sentidos (ida y vuelta)
-    gsap.fromTo("body", 
-        { backgroundColor: "#F4F6F0" }, // Color del Hero
-        {
-            backgroundColor: "#95A37D", // Color verde oliva de la intro
+function initCarouselSection() {
+    const track = document.querySelector(".carousel-track");
+    if (!track) return;
+
+    gsap.fromTo(".carousel-title-text", 
+        { y: 80, opacity: 0 },
+        { 
+            y: 0, 
+            opacity: 1, 
+            duration: 1.2, 
+            ease: "power3.out",
             scrollTrigger: {
-                trigger: "#story-intro",
-                start: "top 90%", // Comienza casi apenas asoma la sección
-                end: "top 10%",   // Termina cuando ya casi cubre toda la pantalla
-                scrub: true,      // Hace que dependa totalmente de la posición del scroll
+                trigger: "#story-carousel",
+                start: "top 75%",
+                toggleActions: "play none none reverse"
             }
         }
     );
 
-    // Limpiamos el fondo del section para que el body se vea
-    gsap.set("#story-intro", { backgroundColor: "transparent" });
-
-    gsap.set(".img-1", { rotation: -6 });
-    gsap.set(".img-2", { rotation: 4 });
-    gsap.set(".img-3", { rotation: -5 });
-    gsap.set(".img-4", { rotation: 5 });
-
-    // 2. Timeline principal con scrub y PIN para centrar el texto
-    const introTl = gsap.timeline({
+    const carouselTl = gsap.timeline({
         scrollTrigger: {
-            trigger: "#story-intro",
-            start: "top top", // Inicia cuando el section llega al tope de la pantalla
-            end: "+=300%",    // Dura 2.5 veces el alto de la pantalla (más tiempo de scroll)
-            pin: true,        // Pineamos la sección
-            scrub: 1.2,       // Scrub suave
-        }
-    });
-
-    // Fase 1: Aparece el texto elegantemente centrado
-    introTl.fromTo(".intro-text",
-        { opacity: 0, scale: 0.9, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" }
-    )
-
-    .to(".intro-img", { 
-        y: "-300vh", // Hacemos que viajen mucho hacia arriba para cruzar toda la pantalla
-        duration: 8, // Le damos mucho "peso" en la línea de tiempo
-        ease: "none" // En scrub, "none" evita acelerones raros
-    }, "+=0.5")
-
-    // Fase 2: Imágenes suben con parallax por encima del texto
-    // Se desplazan en Y negativas (hacia arriba)
-   .to(".img-1", { rotation: -8, duration: 8 }, "<")
-    .to(".img-2", { rotation: 6, duration: 8 }, "<")
-    .to(".img-3", { rotation: -5, duration: 8 }, "<")
-    .to(".img-4", { rotation: 9, duration: 8 }, "<");
-}
-
-function initChapters() {
-    // 1. Transición de fondo: De Verde a Claro
-    // Usamos fromTo para garantizar que recuerde el verde al devolverse
-    gsap.fromTo("body", 
-        { backgroundColor: "#95A37D" }, // El verde que venía de la sección anterior
-        {
-            backgroundColor: "#F4F6F0", // Color claro (blanco hueso)
-            scrollTrigger: {
-                trigger: "#chapter-1",
-                start: "top 90%", // Una ventana de transición bien grande para máxima suavidad
-                end: "top 10%",
-                scrub: true,
-            }
-        }
-    );
-
-    // Aseguramos que la sección no tenga un fondo fijo tapando el body
-    gsap.set("#chapter-1", { backgroundColor: "transparent" });
-
-    // Rotaciones iniciales para las fotos
-    gsap.set(".c1-img-1", { rotation: -4 });
-    gsap.set(".c1-img-2", { rotation: 5 });
-
-    // 2. Animación del Capítulo 1 con PIN (Textos y Fotos)
-    const c1Tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: "#chapter-1",
-            start: "top top", // Arranca cuando llega al top
-            end: "+=200%",    // Dura 2 veces el alto de la pantalla (pin duration)
-            pin: true,        // Fundamental para el efecto que buscas
-            scrub: 1.2        // Sensibilidad suave
-        }
-    });
-
-    // El texto entra flotando suavemente desde abajo al centro
-    c1Tl.fromTo("#chapter-1 .chapter-text-box",
-        { opacity: 0, scale: 0.9, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" }
-    )
-    
-    // Las fotos viajan arriba pasando por encima del texto (parallax completo)
-    .to("#chapter-1 .chap-img", { 
-        y: "-250vh", // Distancia larga para que crucen toda la pantalla
-        duration: 6, 
-        ease: "none" 
-    }, "+=0.5")
-
-    // Rotación sutil mientras viajan (para darles vida)
-    .to("#chapter-1 .c1-img-1", { rotation: -8, duration: 6 }, "<")
-    .to("#chapter-1 .c1-img-2", { rotation: 8, duration: 6 }, "<");
-}
-
-
-// ==========================================
-// UTILIDAD: Cortador de palabras
-// ==========================================
-function wrapWords(selector) {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => {
-        const words = el.innerText.split(' ');
-        el.innerHTML = '';
-        words.forEach(word => {
-            const span = document.createElement('span');
-            span.className = 'word';
-            span.innerText = word + ' '; // Añade el espacio de vuelta
-            el.appendChild(span);
-        });
-    });
-}
-
-// ==========================================
-// INICIALIZADOR CAPÍTULO 2
-// ==========================================
-
-
-function initChapter2() {
-    // 1. Ejecutamos el cortador de palabras para este párrafo
-    wrapWords("#chapter-2 .split-text-target");
-
-    // 2. Transición de fondo: De Claro a Verde Oliva (usando fromTo y ventana larga)
-    gsap.fromTo("body", 
-        { backgroundColor: "#F4F6F0" },
-        {
-            backgroundColor: "#95A37D",
-            scrollTrigger: {
-                trigger: "#chapter-2",
-                start: "top 90%",
-                end: "top 10%",
-                scrub: true,
-            }
-        }
-    );
-
-    gsap.set("#chapter-2", { backgroundColor: "transparent" });
-
-    // Fijamos las fotos fuera de la pantalla abajo (y: "120vh") y listas para subir al centro (y: 0)
-    gsap.set(".c2-img-1", { y: "120vh", xPercent: -50, yPercent: -50, rotation: -12, opacity: 1, scale: 1 });
-    gsap.set(".c2-img-2", { y: "120vh", xPercent: -50, yPercent: -50, rotation: 12, opacity: 1, scale: 1 });
-
-    // 3. Timeline del Capítulo 2
-    const c2Tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: "#chapter-2",
+            trigger: "#story-carousel",
             start: "top top",
-            end: "+=300%", // Ampliamos el scroll para disfrutar el efecto
+            end: () => `+=${track.scrollWidth}`,
             pin: true,
-            scrub: 1.2
+            scrub: 1.5,
+            invalidateOnRefresh: true 
         }
     });
 
-    // Fase 1: Cascada de palabras
-    c2Tl.fromTo("#chapter-2 .word",
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, stagger: 0.1, duration: 4, ease: "power1.out" }
-    )
+    const images = document.querySelectorAll(".carousel-slide img");
+    images.forEach(img => {
+        gsap.set(img, { scale: 1.2, xPercent: -15 });
+        carouselTl.to(img, {
+            xPercent: 15,
+            ease: "none",
+            duration: 4
+        }, 0);
+    });
 
-    // Fase 2: Sube la primera foto desde abajo y se frena en el centro
-    .to(".c2-img-1", { 
-        y: "0vh", 
-        rotation: -4, // Se acomoda suavemente con este giro
-        duration: 5, 
-        ease: "power2.out" // Frena suavemente
-    }, "+=0.5") 
+    carouselTl.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth + (window.innerWidth * 0.05)),
+        ease: "none", 
+        duration: 4
+    }, 0);
     
-    // Fase 3: Sube la segunda foto por la misma ruta y se apila
-    .to(".c2-img-2", { 
-        y: "0vh", 
-        rotation: 6, // Giro inverso
-        duration: 5, 
-        ease: "power2.out" 
-    }, "-=1.5"); // Empieza a subir un poco antes de que la primera termine, solapándose perfecto
+    carouselTl.to({}, { duration: 0.3 });
+}
+
+function initDetailsSection() {
+    const blocks = document.querySelectorAll(".info-block");
+    if (blocks.length === 0) return;
+
+    blocks.forEach(block => {
+        const mediaContainer = block.querySelector(".info-media-container");
+        const infoCard = block.querySelector(".info-card-content");
+        const blockTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: block,
+                start: "top top",
+                end: "+=100%",
+                pin: true,
+                scrub: 1.5,
+                invalidateOnRefresh: true
+            }
+        });
+
+        blockTl.to(mediaContainer, {
+            top: "4vh",
+            left: "4vw",
+            width: "92vw",
+            height: "64vh",
+            borderRadius: "8px",
+            ease: "power1.inOut"
+        }, 0);
+
+        blockTl.to(infoCard, {
+            opacity: 1,
+            y: 0,
+            ease: "power2.out"
+        }, 0);
+    });
 }

@@ -1,5 +1,3 @@
-
-/* Reset y configuración base */
 * {
     margin: 0;
     padding: 0;
@@ -8,15 +6,13 @@
 
 body {
     overflow: hidden;
-    background-color: #F4F6F0
+    background-color: #F4F6F0;
+    transition: background-color 0.4s ease;
 }
 
-/* Configuración de la fuente personalizada.
-  Asegúrate de descargar la fuente y ponerla en una carpeta fonts/
-*/
 @font-face {
     font-family: 'Domine';
-    src: url('../assets/fonts/Domine-Regular.ttf    ') format('truetype');
+    src: url('../assets/fonts/Domine-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -33,35 +29,27 @@ body {
     font-style: normal;
 }
 
-/* El Contenedor del Preloader */
 .preloader {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #95A37D; /* Verde Oliva Claro Premium */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    /* Preparamos el clip-path para que ocupe toda la pantalla inicialmente */
-    clip-path: circle(150% at 50% 50%);
-    will-change: clip-path, transform; /* Optimización de hardware para la animación */
-    
-
+    background-color: #95A37D;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 30px;
+    z-index: 9999;
+    clip-path: circle(150% at 50% 50%);
+    will-change: clip-path, transform;
 }
 
-/* Tipografía de lujo */
 .ethereal-font {
     font-family: 'Domine', serif;
     color: #FFFFFF;
-    font-size: clamp(1.6rem, 6vw, 2.8rem);
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
     text-align: center;
     letter-spacing: 0.05em;
     line-height: 1.4;
@@ -69,30 +57,16 @@ body {
     max-width: 800px;
 }
 
-/* Estilo para cada letra individual (para el efecto máquina de escribir) */
-.char {
-    opacity: 0; /* Ocultas por defecto */
-    display: inline-block;
-}
-
-/* Pequeño truco para que los espacios en blanco respeten el tamaño */
-.char.space {
-    width: 0.5em;
-}
-
-
-
-
 .svg-container {
-    width: 250px; /* Aumentamos el tamaño porque la proporción es ancha (1565x416) */
+    width: 250px;
     height: auto;
 }
 
 .draw-path {
-    fill: none; /* Aseguramos que no se rellene nada */
-    stroke: #FFFFFF; /* Cambiamos el negro de Illustrator por el blanco de la UI */
-    stroke-width: 10px; /* El grosor exacto que diseñaste */
-    stroke-linecap: round; /* Bordes redondeados en la línea = Premium */
+    fill: none;
+    stroke: #FFFFFF;
+    stroke-width: 10px;
+    stroke-linecap: round;
     stroke-linejoin: round;
 }
 
@@ -101,33 +75,141 @@ body {
     visibility: hidden;
 }
 
-/* --- HERO SECTION --- */
+.audio-control {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(74, 93, 35, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100;
+    color: #4A5D23;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.pulse-alert {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background-color: #D4A373;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 163, 115, 0.5); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(212, 163, 115, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 163, 115, 0); }
+}
+
+.mute-path {
+    stroke-dasharray: 29;
+    stroke-dashoffset: 29;
+    transition: stroke-dashoffset 0.3s ease-in-out;
+}
+
+.is-muted .mute-path {
+    stroke-dashoffset: 0;
+}
+
 .hero-section {
     position: relative;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribuye arriba, centro y abajo */
+    justify-content: space-between;
     align-items: center;
-    padding: 12vh 20px 8vh 20px; /* Padding vertical para no pegarse a los bordes */
+    padding: 12vh 20px 8vh 20px;
     text-align: center;
-    color: #4A5D23; /* Verde Oliva Oscuro para los textos pequeños */
+    color: #4A5D23;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero-element {
+    position: relative;
+    z-index: 1;
 }
 
 .subtitle, .location-date {
-    text-transform: uppercase;
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.1rem; /* Subimos de 0.9 a 1.1 */
-    letter-spacing: 0.2em; /* Un poco más de espacio entre letras para que respire */
+    font-size: 1rem;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    font-weight: 500; /* Le da un pelín más de cuerpo */
+    font-weight: 500;
 }
 
-/* --- CONTADOR --- */
+.title-names {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.name-wrapper {
+    overflow: hidden;
+    padding: 10px 20px;
+    margin: -10px -20px;
+}
+
+.name-block {
+    display: block;
+    transform: translateY(110%);
+    line-height: 1.1;
+}
+
+.robert-font {
+    font-family: 'BlackSignature', serif;
+    font-size: clamp(2.2rem, 8vw, 4.8rem);
+    color: #1A1A1A;
+}
+
+.laura-font {
+    font-family: 'High_Empathy', cursive;
+    font-size: clamp(3rem, 10vw, 5.8rem);
+    color: #1A1A1A;
+}
+
+.ampersand-inline {
+    font-family: 'High_Empathy', cursive;
+    font-size: clamp(2rem, 6vw, 3.8rem);
+    color: #95A37D;
+}
+
+.hero-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
 .countdown {
     display: flex;
-    gap: 20px;
-    margin-top: 15px;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    width: 100%;
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -138,349 +220,483 @@ body {
 }
 
 .time-box span {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 300;
     font-variant-numeric: tabular-nums;
 }
 
 .time-box small {
     font-size: 0.6rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    opacity: 0.7;
-}
-
-/* --- INDICADOR DE SCROLL --- */
-.scroll-indicator {
-    margin-top: 30px;
     opacity: 0.6;
-    animation: bounce 2s infinite ease-in-out;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(10px); }
+.scroll-indicator {
+    margin-top: 35px;
+    opacity: 0.4;
 }
 
-/* --- BOTÓN DE AUDIO --- */
-.audio-control {
-    position: fixed;
-    top: 25px;
-    right: 25px;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(74, 93, 35, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 100;
-    color: #4A5D23;
-    transition: all 0.3s ease;
+.story-editorial {
+    position: relative;
+    min-height: 180vh;
+    padding: 15vh 4vw;
+    overflow: hidden;
+    background-color: transparent;
 }
 
-.audio-control:active {
-    transform: scale(0.9);
-}
-
-/* El puntito/alerta que pide interacción */
-.pulse-alert {
+.editorial-marquee {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-    background-color: #D4A373; /* Un tono cálido sutil que llame la atención sin ser agresivo */
-    border-radius: 50%;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 163, 115, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(212, 163, 115, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 163, 115, 0); }
-}
-
-.hero-bottom {
+    top: 5vh;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 150vw;
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    gap: 4vh;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.marquee-line {
+    font-family: 'Domine', serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 400;
+    color: rgba(74, 93, 35, 0.6);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    line-height: 1;
+}
+
+.editorial-gallery {
+    position: relative;
     width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 140vh;
+    z-index: 2;
 }
 
-.countdown {
-    display: flex;
-    justify-content: center; /* Esto fuerza a los elementos del contador al centro */
-    gap: 20px;
-    margin-top: 15px;
-    width: 100%;
+.gallery-photo {
+    position: absolute;
+    object-fit: cover;
+    background-color: #F4F6F0;
+    will-change: transform;
+    border-radius: 2px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); 
 }
 
-.mute-path {
-    stroke-dasharray: 29; /* Longitud aproximada de la diagonal */
-    stroke-dashoffset: 29; /* Oculta */
-    transition: stroke-dashoffset 0.4s ease-in-out; /* Animación fluida al cambiar */
+.photo-1 {
+    width: 32%;
+    height: 48vh;
+    top: 5vh;
+    left: 34%;
 }
 
-/* Esta clase se la pondremos con JS cuando esté en pausa */
-.is-muted .mute-path {
-    stroke-dashoffset: 0; /* Se dibuja */
+.photo-2 {
+    width: 26%;
+    height: 38vh;
+    top: 25vh;
+    right: 2%;
 }
 
-.title-names {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 12px; /* Espacio respirable entre las palabras */
-    width: 100%;
+.photo-3 {
+    width: 30%;
+    height: 45vh;
+    top: 60vh;
+    left: 2%;
 }
 
-/* Fuente Serif estructurada */
-.robert-font {
-    font-family: 'BlackSignature', serif;
-    font-size: clamp(2rem, 8vw, 4.5rem);
-    color: #1A1A1A;
+.photo-4 {
+    width: 28%;
+    height: 38vh;
+    top: 65vh;
+    left: 38%;
 }
 
-/* Fuente Manuscrita / Script delicada */
-.laura-font {
-    font-family: 'High_Empathy', cursive; /* Reemplaza por la que elijas */
-    font-size: clamp(2.8rem, 10vw, 5.5rem); /* Ligeramente más grande para compensar el peso visual */
-    color: #1A1A1A;
+.photo-5 {
+    width: 25%;
+    height: 42vh;
+    top: 85vh;
+    right: 5%;
 }
 
-/* El puente visual */
-.ampersand-inline {
-    font-family: 'High_Empathy', cursive;
-    font-size: clamp(1.8rem, 6vw, 3.5rem);
-    color: #95A37D; /* El toque verde oliva que aporta el color sin robar protagonismo */
-    opacity: 0; /* Preparado para la animación */
+@media (max-width: 768px) {
+    .story-editorial {
+        min-height: auto;
+        padding-bottom: 0;
+    }
+    .editorial-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: auto;
+        padding: 5vh 0 0 0;
+        margin-bottom: -15vh;
+    }
+    .gallery-photo {
+        position: relative;
+        height: auto !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        border-radius: 4px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .photo-1 {
+        width: 75% !important;
+        align-self: flex-start;
+    }
+    
+    .photo-2 {
+        width: 65% !important;
+        align-self: flex-end;
+        margin-top: -15%;
+    }
+    
+    .photo-3 {
+        width: 85% !important;
+        align-self: center;
+        margin-top: -10%;
+    }
+    
+    .photo-4 {
+        width: 70% !important;
+        align-self: flex-start;
+        margin-top: -15%;
+    }
+    
+    .photo-5 {
+        width: 80% !important;
+        align-self: flex-end;
+        margin-top: -20%;
+    }
+
+    .editorial-marquee {
+        /* Se hereda top: 5vh */
+    }
+    .marquee-line {
+        font-size: 3.5rem;
+    }
 }
 
-
-.name-wrapper {
+.story-carousel {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
-    padding: 12px 28px; 
-    margin: -12px -28px;
+    background-color: #FFFFFF;
 }
 
-.name-block {
-    display: block;
-    transform: translateY(110%);
+.carousel-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 14vh 0 8vh 0;
+}
+
+.carousel-title-wrapper {
+    width: 100%;
+    padding: 0 8vw;
+    text-align: left;
+}
+
+.carousel-title-text {
+    font-family: 'Domine', serif;
+    color: #1A1A1A;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.accent-title {
+    font-family: 'High_Empathy', cursive;
+    color: #95A37D;
+    font-size: clamp(2.6rem, 7vw, 4.8rem);
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.carousel-track-wrapper {
+    width: 100%;
+    overflow: visible;
+    margin-top: auto;
+    margin-bottom: 4vh;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 4vw;
+    padding-left: 95vw;
+    will-change: transform;
+}
+
+.carousel-slide {
+    flex-shrink: 0;
+    width: clamp(280px, 25vw, 380px);
+    height: 52vh;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #F4F6F0;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
+    transition: transform 0.4s ease;
+}
+
+.carousel-slide:nth-child(even) {
+    transform: translateY(4vh);
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        padding: 6vh 0 8vh 0;
+        justify-content: center;
+        gap: 5vh;
+    }
+
+    .carousel-title-wrapper {
+        padding: 0 6vw;
+    }
+
+    .carousel-track {
+        padding-left: 85vw;
+        gap: 6vw;
+    }
+
+    .carousel-slide {
+        width: 250px;
+        height: 40vh;
+    }
+
+    .carousel-slide:nth-child(even) {
+        transform: translateY(2vh); 
+    }
+}
+
+.wedding-invitation {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: #FFFFFF;
+    padding: 16vh 8vw;
+    display: flex;
+    justify-content: center;
+}
+
+.invitation-container {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 8vh;
+}
+
+.invitation-header {
+    width: 100%;
+    text-align: left;
+}
+
+.invitation-subtitle {
+    font-family: 'Domine', serif;
+    color: #4A5D23;
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
     line-height: 1.2;
 }
 
-.hero-section::before {
+.invitation-body {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+
+.editorial-paragraph {
+    font-family: 'Domine', serif;
+    color: #1A1A1A;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    line-height: 1.8;
+    text-align: justify;
+    font-weight: 300;
+}
+
+.editorial-paragraph::first-letter {
+    font-family: 'Domine', serif;
+    font-size: clamp(3rem, 5vw, 4.2rem);
+    font-weight: 700;
+    float: left;
+    line-height: 0.85;
+    padding-top: 4px;
+    padding-right: 12px;
+    padding-left: 2px;
+    color: #1A1A1A;
+}
+
+/* Ajuste rápido para Mobile */
+@media (max-width: 768px) {
+    .wedding-invitation {
+        padding: 10vh 6vw;
+    }
+    .invitation-container {
+        gap: 5vh;
+    }
+    .editorial-paragraph {
+        text-align: left;
+    }
+}
+
+.wedding-details-wrapper {
+    width: 100vw;
+    background-color: #FFFFFF;
+}
+
+.info-block {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFFFFF;
+}
+
+.info-media-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+    will-change: transform, border-radius, width, height, top;
+}
+
+.info-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info-card-content {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    margin-bottom: 5vh;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 40px;
+    max-width: 520px;
+    width: 90%;
+    border: 1px solid rgba(74, 93, 35, 0.08);
+    border-radius: 4px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(40px);
+    will-change: transform, opacity;
+}
+
+.info-card-title {
+    font-family: 'Domine', serif;
+    font-size: 1.6rem;
+    color: #1A1A1A;
+    margin-bottom: 12px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+.info-card-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #4A4A4A;
+    font-weight: 300;
+}
+
+.dress-code-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    margin-top: 5px;
+}
+
+.premium-outline-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 26px;
+    border: 1px solid #4A5D23;
+    background-color: transparent;
+    color: #4A5D23;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    margin-top: 22px;
+    cursor: pointer;
+    transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.premium-outline-btn::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* Ruido SVG codificado en Data URI (Super ligero) */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-color: #4A5D23;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.premium-outline-btn:hover {
+    color: #FFFFFF;
+}
+
+.premium-outline-btn:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+@media (max-width: 768px) {
+    .info-card-content {
+        padding: 24px 20px;
+        margin-bottom: 6vh;
+    }
+
+    .info-card-title {
+        font-size: 1.35rem;
+    }
+
+    .info-card-text {
+        font-size: 0.82rem;
+    }
     
-    /* Control de intensidad */
-    opacity: 0.3; 
-    
-    /* Crucial: Esto hace que la textura sea "fantasma" y no bloquee clics o selecciones de texto */
-    pointer-events: none; 
-    
-    /* Lo mandamos al fondo de esta sección */
-    z-index: 0; 
-}
-
-.hero-element {
-    position: relative;
-    z-index: 1; /* Esto levanta todo el contenido por encima del papel texturizado */
-}
-
-
-
-
-
-
-
-/* --- STORYTELLING INTRO --- */
-.story-intro {
-    position: relative;
-    height: 100vh; /* Fijo para el efecto pin */
-    background-color: transparent; /* GSAP animará el color de fondo del body */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    overflow: hidden;
-    z-index: 2; /* Pasa por encima de la Hero section al hacer scroll */
-}
-
-.intro-content {
-    position: relative;
-    width: 100%;
-    height: 100%; /* Ocupa todo el contenedor para usar absolute positioning */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.intro-text {
-    /* Mantenemos tu fuente Domine para conectar con los nombres */
-    font-size: clamp(1.4rem, 5vw, 2.2rem);
-    color: #1A2412; /* Un verde oscuro casi negro (Grafito botánico) para contraste premium */
-    line-height: 1.4;
-    position: absolute; /* Centrado absoluto en la pantalla pineada */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10; /* Texto debajo de las imágenes (las imgs tendrán z-index superior) */
-    width: 90%;
-    max-width: 800px;
-    text-align: center;
-    margin: 0;
-}
-
-/* Galería tipo collage */
-.intro-gallery {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 20; /* Las imágenes pasan por encima del texto */
-    pointer-events: none; /* Evita que bloqueen posibles clics en el texto */
-}
-
-.intro-img {
-    position: absolute;
-    border-radius: 8px; /* Borde un poco más curvo y moderno */
-    box-shadow: 0 25px 50px rgba(26, 36, 18, 0.25); /* Sombra elegante 3D profunda */
-    object-fit: cover;
-    will-change: transform; /* Optimiza rendimiento de animación GSAP */
-}
-
-.img-1 { width: 45%; max-width: 200px; top: 110%; left: 5%; }
-.img-2 { width: 45%; max-width: 220px; top: 140%; right: 5%; } 
-.img-3 { width: 45%; max-width: 200px; top: 170%; left: 5%; }  
-.img-4 { width: 45%; max-width: 220px; top: 200%; right: 5%; }
-
-
-/* --- STORYTELLING CHAPTERS --- */
-.story-chapter {
-    position: relative;
-    height: 100vh; /* Fijo para el pin */
-    background-color: transparent; /* El GSAP cambiará el body color */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.chapter-content {
-    position: relative;
-    width: 100%;
-    height: 100%; /* Ocupa todo el contenedor para usar absolute positioning */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Tipografía del Capítulo */
-.chapter-text-box {
-    position: absolute; /* Centrado absoluto para el pin */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    width: 90%;
-    max-width: 800px;
-    text-align: center;
-}
-
-.chapter-title {
-    color: #4A5D23; /* Verde oliva oscuro para el título */
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    margin-bottom: 20px;
-}
-
-.chapter-paragraph {
-    font-family: 'Montserrat', sans-serif;
-    color: #1A1A1A;
-    font-size: clamp(1rem, 4vw, 1.2rem);
-    line-height: 1.6;
-    font-weight: 300;
-}
-
-/* Galería de 2 fotos */
-.chapter-gallery {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 20; /* Las imágenes pasan por encima del texto */
-    pointer-events: none;
-}
-
-.chap-img {
-    position: absolute;
-    border-radius: 8px; /* Borde moderno igual que intro */
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); /* Sombra 3D profunda */
-    object-fit: cover;
-    will-change: transform;
-}
-
-/* Posiciones y rotaciones fijas iniciales (por debajo de la pantalla para el parallax) */
-.c1-img-1 {
-    width: 45%;
-    max-width: 250px;
-    top: 120%;
-    left: 10%;
-}
-
-.c1-img-2 {
-    width: 50%;
-    max-width: 280px;
-    top: 145%;
-    right: 10%;
-}
-
-
-/* --- TEMA OSCURO (CAPÍTULO 2) --- */
-.dark-theme .title-contrast {
-    color: #1A1A1A; /* Un tono cálido/dorado sutil que brilla sobre el verde oliva */
-}
-
-.dark-theme .paragraph-light {
-    color: #F4F6F0; /* Blanco hueso para una lectura descansada */
-}
-
-/* --- UTILIDAD PARA EFECTO CASCADA --- */
-.word {
-    display: inline-block;
-    white-space: pre; /* Mantiene los espacios entre palabras */
-    will-change: opacity, transform;
-}
-
-/* --- GALERÍA CAPÍTULO 2 (STACKING DESDE EL CENTRO) --- */
-.c2-img-1 {
-    width: 55%;
-    max-width: 260px;
-    top: 50%; 
-    left: 50%;
-    z-index: 1;
-}
-
-.c2-img-2 {
-    width: 50%;
-    max-width: 240px;
-    top: 50%; 
-    left: 50%;
-    z-index: 2; /* Se montará sobre la primera */
-    box-shadow: -10px 15px 40px rgba(0,0,0,0.3); /* Sombra hacia la izquierda para dar profundidad al apilar */
+    .premium-outline-btn {
+        padding: 11px 22px;
+        font-size: 0.75rem;
+        width: 100%;
+    }
 }
