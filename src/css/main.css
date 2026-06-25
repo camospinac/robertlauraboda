@@ -700,3 +700,51 @@ body {
         width: 100%;
     }
 }
+
+.pinterest-helper {
+    margin-top: 30px;
+    border-top: 1px solid rgba(74, 93, 35, 0.1);
+    padding-top: 20px;
+}
+
+.helper-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    color: #4A5D23;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+    font-weight: 400;
+}
+
+.helper-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.premium-outline-btn.dress-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 0.75rem;
+    flex: 1;
+    max-width: 160px;
+}
+
+.dress-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    display: inline-block;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+@media (max-width: 480px) {
+    .helper-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .premium-outline-btn.dress-btn {
+        max-width: 100%;
+    }
+}
