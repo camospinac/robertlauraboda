@@ -361,13 +361,13 @@ function triggerCalendarDownload() {
     const icsContent = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
-        "PRODID:-//Nuestra Boda//Camilo Antonio Ospina Cruz//ES",
+        "PRODID:-//Nuestra Boda//Robert & Laura//ES",
         "BEGIN:VEVENT",
         "UID:" + Date.now() + "@nuestraboda.com",
         "DTSTAMP:20260625T000000Z",
-        "DTSTART:20261010T150000",  // Sábado 10 de Octubre de 2026 - 3:00 PM (Hora Local)
-        "DTEND:20261011T020000",    // Estimado de finalización: Domingo 11 de Octubre - 2:00 AM
-        "SUMMARY:Nuestra Boda — Camilo & Olga",
+        "DTSTART:20261010T150000",
+        "DTEND:20261011T020000",
+        "SUMMARY:Nuestra Boda — Robert & Laura",
         "DESCRIPTION:¡Llegó el gran día! Te esperamos para celebrar juntos. Recuerda revisar los detalles de vestimenta y ubicación en nuestra web oficial.",
         "LOCATION:Hacienda Santa Elena\\, Kilómetro 1.5\\, Vía Cota — Siberia",
         "END:VEVENT",
@@ -378,7 +378,7 @@ function triggerCalendarDownload() {
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "boda_camilo.ics";
+    link.download = "boda_robert_laura.ics";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

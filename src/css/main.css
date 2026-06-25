@@ -767,7 +767,6 @@ body {
     }
 }
 
-/* Estilos específicos para la tarjeta RSVP */
 .rsvp-card {
     min-height: 280px;
     transition: min-height 0.4s ease;
@@ -781,7 +780,6 @@ body {
     justify-content: center;
 }
 
-/* Estilo para deshabilitar el botón mientras procesa en Supabase */
 .premium-outline-btn.is-loading {
     opacity: 0.5;
     pointer-events: none;
