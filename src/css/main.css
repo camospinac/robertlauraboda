@@ -29,6 +29,20 @@ body {
     font-style: normal;
 }
 
+
+@font-face {
+    font-family: 'CustomRobertFont';
+    src: url('../assets/fonts/NRobert/TNanti.otf') format('opentype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CustomLauraFont';
+    src: url('../assets/fonts/NLaura/Classic_Market.otf') format('opentype');
+    font-style: normal;
+}
+
+
 .preloader {
     position: fixed;
     top: 0;
@@ -192,14 +206,15 @@ body {
 }
 
 .robert-font {
-    font-family: 'BlackSignature', serif;
-    font-size: clamp(2.2rem, 8vw, 4.8rem);
+    font-family: 'CustomRobertFont', serif;
+    font-size: clamp(3.5rem, 8vw, 4.8rem);
     color: #1A1A1A;
+    transform: translateY(-100px);
 }
 
 .laura-font {
-    font-family: 'High_Empathy', cursive;
-    font-size: clamp(3rem, 10vw, 5.8rem);
+    font-family: 'CustomLauraFont', cursive;
+    font-size: clamp(3.2rem, 10vw, 5.8rem);
     color: #1A1A1A;
 }
 

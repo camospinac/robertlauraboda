@@ -1,0 +1,28 @@
+/* =========================================
+   FUENTES PARA LOS NOMBRES (Robert y Laura)
+   ========================================= 
+   Si el cliente quiere cambiar las letras, 
+   solo modifica la ruta (url) en "src" aquí abajo.
+*/
+
+@font-face {
+    font-family: 'CustomRobertFont';
+    src: url('../assets/fonts/NRobert/TNanti.otf') format('opentype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CustomLauraFont';
+    src: url('../assets/fonts/NLaura/212BabyGirl.otf') format('opentype');
+    font-style: normal;
+}
+
+.robert-font {
+    font-family: 'CustomRobertFont', serif !important;
+    font-size: 5.25em;
+}
+
+.laura-font {
+    font-family: 'CustomLauraFont', cursive !important;
+    font-size: 4.65em; 
+}
