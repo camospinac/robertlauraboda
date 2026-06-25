@@ -106,9 +106,20 @@ body {
 }
 
 @keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 163, 115, 0.5); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(212, 163, 115, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 163, 115, 0); }
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(212, 163, 115, 0.5);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(212, 163, 115, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(212, 163, 115, 0);
+    }
 }
 
 .mute-path {
@@ -151,7 +162,8 @@ body {
     z-index: 1;
 }
 
-.subtitle, .location-date {
+.subtitle,
+.location-date {
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     letter-spacing: 0.25em;
@@ -283,7 +295,7 @@ body {
     background-color: #F4F6F0;
     will-change: transform;
     border-radius: 2px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .photo-1 {
@@ -326,6 +338,7 @@ body {
         min-height: auto;
         padding-bottom: 0;
     }
+
     .editorial-gallery {
         display: flex;
         flex-direction: column;
@@ -334,6 +347,7 @@ body {
         padding: 5vh 0 0 0;
         margin-bottom: -15vh;
     }
+
     .gallery-photo {
         position: relative;
         height: auto !important;
@@ -343,30 +357,30 @@ body {
         border-radius: 4px;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
-    
+
     .photo-1 {
         width: 75% !important;
         align-self: flex-start;
     }
-    
+
     .photo-2 {
         width: 65% !important;
         align-self: flex-end;
         margin-top: -15%;
     }
-    
+
     .photo-3 {
         width: 85% !important;
         align-self: center;
         margin-top: -10%;
     }
-    
+
     .photo-4 {
         width: 70% !important;
         align-self: flex-start;
         margin-top: -15%;
     }
-    
+
     .photo-5 {
         width: 80% !important;
         align-self: flex-end;
@@ -376,6 +390,7 @@ body {
     .editorial-marquee {
         /* Se hereda top: 5vh */
     }
+
     .marquee-line {
         font-size: 3.5rem;
     }
@@ -478,7 +493,7 @@ body {
     }
 
     .carousel-slide:nth-child(even) {
-        transform: translateY(2vh); 
+        transform: translateY(2vh);
     }
 }
 
@@ -549,9 +564,11 @@ body {
     .wedding-invitation {
         padding: 10vh 6vw;
     }
+
     .invitation-container {
         gap: 5vh;
     }
+
     .editorial-paragraph {
         text-align: left;
     }
@@ -693,7 +710,7 @@ body {
     .info-card-text {
         font-size: 0.82rem;
     }
-    
+
     .premium-outline-btn {
         padding: 11px 22px;
         font-size: 0.75rem;
@@ -744,7 +761,29 @@ body {
         flex-direction: column;
         gap: 5px;
     }
+
     .premium-outline-btn.dress-btn {
         max-width: 100%;
     }
+}
+
+/* Estilos específicos para la tarjeta RSVP */
+.rsvp-card {
+    min-height: 280px;
+    transition: min-height 0.4s ease;
+}
+
+.rsvp-state-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilo para deshabilitar el botón mientras procesa en Supabase */
+.premium-outline-btn.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
 }

@@ -152,6 +152,7 @@
 
                 <div class="invitation-body">
                     <p class="editorial-paragraph">
+                        <span id="custom-family-name" class="custom-guest-name"></span>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam id finibus purus, vitae
                         vestibulum ex. Sed sed mi sit amet lectus varius laoreet quis finibus justo. Ut ac nisl non
                         dolor aliquam mollis eget sed sapien.
@@ -171,109 +172,134 @@
             </div>
         </section>
 
-        <div id="wedding-details-wrapper" class="wedding-details-wrapper">
+        <!-- BLOQUE 1: RSVP & CONFIRMACIÓN MÁGICA -->
+        <section class="info-block">
+            <div class="info-media-container">
+                <img src="https://picsum.photos/seed/infofechahora/1200/800" class="info-image"
+                    alt="Confirmación de Asistencia">
+            </div>
 
-            <section class="info-block">
-                <div class="info-media-container">
-                    <img src="https://picsum.photos/seed/infofechahora/1200/800" class="info-image"
-                        alt="Fecha y Hora de la Boda">
-                </div>
-                <div class="info-card-content">
-                    <h4 class="info-card-title">Fecha & Hora</h4>
-                    <p class="info-card-text">
-                        Sábado, 10 de Octubre de 2026<br>
-                        Ceremonia: 3:00 PM — Recepción a continuación.
+            <div class="info-card-content rsvp-card">
+
+                <!-- ESTADO 1: LA INVITACIÓN / PREGUNTA -->
+                <div id="rsvp-initial-state" class="rsvp-state-wrapper">
+                    <h4 class="info-card-title">Nuestra Cita</h4>
+                    <p class="info-card-text premium-editorial-text">
+                        Nuestra historia no estaría completa sin ti. Queremos saber si contaremos con la dicha de tu
+                        compañía para celebrar el amor el próximo <strong>Sábado, 10 de Octubre de 2026</strong>.
                     </p>
-                    <a href="#" class="premium-outline-btn calendar-action">
+                    <p class="info-card-text" style="font-size: 0.8rem; margin-top: 10px; opacity: 0.8;">
+                        Ceremonia: 3:00 PM — Hacienda Santa Elena.
+                    </p>
+
+                    <!-- Único botón de confirmación -->
+                    <button id="btn-confirm-rsvp" class="premium-outline-btn rsvp-action-btn">
+                        <span class="btn-text">Sí, allí estaré</span>
+                    </button>
+                </div>
+
+                <!-- ESTADO 2: EL AGRADECIMIENTO (Oculto inicialmente) -->
+                <div id="rsvp-success-state" class="rsvp-state-wrapper" style="display: none; opacity: 0;">
+                    <h4 class="info-card-title" style="color: #4A5D23;">¡Tu lugar está reservado!</h4>
+                    <p class="info-card-text">
+                        Nos hace inmensamente felices saber que celebraremos juntos. Hemos preparado tu pase de
+                        calendario para que no olvides ningún detalle de este gran día.
+                    </p>
+
+                    <!-- Botón de descarga de calendario desbloqueado -->
+                    <button id="btn-download-ics" class="premium-outline-btn calendar-action">
                         <span class="btn-text">Agregar al calendario</span>
-                    </a>
+                    </button>
                 </div>
-            </section>
 
-            <section class="info-block">
-                <div class="info-media-container">
-                    <img src="./src/assets/images/camino.jpg" class="info-image" alt="Camino a la Hacienda Santa Elena">
-                </div>
-                <div class="info-card-content">
-                    <h4 class="info-card-title">La Celebración</h4>
+            </div>
+        </section>
+
+        <section class="info-block">
+            <div class="info-media-container">
+                <img src="./src/assets/images/camino.jpg" class="info-image" alt="Camino a la Hacienda Santa Elena">
+            </div>
+            <div class="info-card-content">
+                <h4 class="info-card-title">La Celebración</h4>
+                <p class="info-card-text">
+                    Nuestra cita es en la **Hacienda Santa Elena**.<br>
+                    <span
+                        style="display: block; margin-top: 8px; opacity: 0.9; font-size: 0.85rem; letter-spacing: 0.02em;">
+                        Kilómetro 1.5, Vía Cota — Siberia.
+                    </span>
+                </p>
+                <a href="https://maps.app.goo.gl/7mecxdNHQ4HC5bDF8" target="_blank"
+                    class="premium-outline-btn maps-action">
+                    <span class="btn-text">Mostrar ruta</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="info-block">
+            <div class="info-media-container">
+                <img src="./src/assets/images/vestimenta.jpg" class="info-image" alt="Código de Vestimenta">
+            </div>
+            <div class="info-card-content">
+                <h4 class="info-card-title">Código de Vestimenta</h4>
+
+                <div class="dress-code-details">
                     <p class="info-card-text">
-                        Nuestra cita es en la **Hacienda Santa Elena**.<br>
-                        <span
-                            style="display: block; margin-top: 8px; opacity: 0.9; font-size: 0.85rem; letter-spacing: 0.02em;">
-                            Kilómetro 1.5, Vía Cota — Siberia.
-                        </span>
+                        <strong>Ellas:</strong> Vestido largo de gala.<br>
+                        <span class="dress-note">Nota de paz: El color blanco es exclusividad absoluta de la
+                            novia, evitemos tener que usar Photoshop ;).</span>
                     </p>
-                    <a href="https://maps.app.goo.gl/7mecxdNHQ4HC5bDF8" target="_blank"
-                        class="premium-outline-btn maps-action">
-                        <span class="btn-text">Mostrar ruta</span>
-                    </a>
-                </div>
-            </section>
-
-            <section class="info-block">
-                <div class="info-media-container">
-                    <img src="./src/assets/images/vestimenta.jpg" class="info-image" alt="Código de Vestimenta">
-                </div>
-                <div class="info-card-content">
-                    <h4 class="info-card-title">Código de Vestimenta</h4>
-
-                    <div class="dress-code-details">
-                        <p class="info-card-text">
-                            <strong>Ellas:</strong> Vestido largo de gala.<br>
-                            <span class="dress-note">Nota de paz: El color blanco es exclusividad absoluta de la
-                                novia, evitemos tener que usar Photoshop ;).</span>
-                        </p>
-                        <p class="info-card-text" style="margin-top: 15px;">
-                            <strong>Ellos:</strong> Traje formal oscuro o sastre. La corbata es opcional, la buena
-                            actitud es obligatoria.
-                        </p>
-                    </div>
-
-                    <div class="pinterest-helper">
-                        <p class="helper-text">¿Necesitas ideas para tu outfit? Inspírate aquí:</p>
-                        <div class="helper-buttons">
-                            <a href="https://co.pinterest.com/pin/2392606049118801/" target="_blank"
-                                class="premium-outline-btn dress-btn">
-                                <span class="btn-text">Para Ella</span>
-                            </a>
-                            <a href="https://co.pinterest.com/pin/1030057746034196104/" target="_blank"
-                                class="premium-outline-btn dress-btn">
-                                <span class="btn-text">Para Él</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="info-block">
-                <div class="info-media-container">
-                    <img src="./src/assets/images/pista2.jpg" class="info-image" alt="Vibras de la fiesta">
-                </div>
-                <div class="info-card-content">
-                    <h4 class="info-card-title">La Música</h4>
-                    <p class="info-card-text">
-                        Queremos bailar toda la noche contigo. Escucha nuestra selección y añade las canciones que no
-                        pueden faltar.
+                    <p class="info-card-text" style="margin-top: 15px;">
+                        <strong>Ellos:</strong> Traje formal oscuro o sastre. La corbata es opcional, la buena
+                        actitud es obligatoria.
                     </p>
-
-                    <div class="spotify-embed-wrapper" style="margin: 20px 0 10px 0;">
-                        <iframe data-testid="embed-iframe" style="border-radius:12px"
-                            src="https://open.spotify.com/embed/playlist/09sikGcp7WJAg8qx5SSlb0?utm_source=generator&si=27317055ad664c8b"
-                            width="100%" height="152" frameBorder="0" allowfullscreen=""
-                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                            loading="lazy"></iframe>
-                    </div>
-
-                    <a href="https://open.spotify.com/playlist/09sikGcp7WJAg8qx5SSlb0?si=fijcwvN6QhOa6MGkPZVBAQ"
-                        target="_blank" class="premium-outline-btn spotify-action">
-                        <span class="btn-text">Agregar canción a la fiesta</span>
-                    </a>
                 </div>
-            </section>
+
+                <div class="pinterest-helper">
+                    <p class="helper-text">¿Necesitas ideas para tu outfit? Inspírate aquí:</p>
+                    <div class="helper-buttons">
+                        <a href="https://co.pinterest.com/pin/2392606049118801/" target="_blank"
+                            class="premium-outline-btn dress-btn">
+                            <span class="btn-text">Para Ella</span>
+                        </a>
+                        <a href="https://co.pinterest.com/pin/1030057746034196104/" target="_blank"
+                            class="premium-outline-btn dress-btn">
+                            <span class="btn-text">Para Él</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-block">
+            <div class="info-media-container">
+                <img src="./src/assets/images/pista2.jpg" class="info-image" alt="Vibras de la fiesta">
+            </div>
+            <div class="info-card-content">
+                <h4 class="info-card-title">La Música</h4>
+                <p class="info-card-text">
+                    Queremos bailar toda la noche contigo. Escucha nuestra selección y añade las canciones que no
+                    pueden faltar.
+                </p>
+
+                <div class="spotify-embed-wrapper" style="margin: 20px 0 10px 0;">
+                    <iframe data-testid="embed-iframe" style="border-radius:12px"
+                        src="https://open.spotify.com/embed/playlist/09sikGcp7WJAg8qx5SSlb0?utm_source=generator&si=27317055ad664c8b"
+                        width="100%" height="152" frameBorder="0" allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"></iframe>
+                </div>
+
+                <a href="https://open.spotify.com/playlist/09sikGcp7WJAg8qx5SSlb0?si=fijcwvN6QhOa6MGkPZVBAQ"
+                    target="_blank" class="premium-outline-btn spotify-action">
+                    <span class="btn-text">Agregar canción a la fiesta</span>
+                </a>
+            </div>
+        </section>
 
         </div>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./src/js/supabase-client.js"></script>
     <script src="./src/js/main.js"></script>
 </body>
 

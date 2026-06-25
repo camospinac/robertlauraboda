@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         onComplete: () => {
             document.getElementById("preloader").remove();
             document.body.style.overflow = "auto";
-            
+
             initHeroAnimation();
         }
     });
@@ -87,17 +87,19 @@ function initHeroAnimation() {
         stagger: 0.12
     })
 
-    .fromTo("#amp",
-        { opacity: 0, scale: 0.9 },
-        { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" },
-        "-=1.0"
-    );
+        .fromTo("#amp",
+            { opacity: 0, scale: 0.9 },
+            { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" },
+            "-=1.0"
+        );
 
     gsap.fromTo(".hero-top, .hero-bottom",
         { opacity: 0, y: 15 },
         { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.6 }
     );
 
+    initURLPersonalization();
+    initRSVPFlow();
     startCountdown();
     initEditorialSection();
     initCarouselSection();
@@ -206,12 +208,12 @@ function initCarouselSection() {
     const track = document.querySelector(".carousel-track");
     if (!track) return;
 
-    gsap.fromTo(".carousel-title-text", 
+    gsap.fromTo(".carousel-title-text",
         { y: 80, opacity: 0 },
-        { 
-            y: 0, 
-            opacity: 1, 
-            duration: 1.2, 
+        {
+            y: 0,
+            opacity: 1,
+            duration: 1.2,
             ease: "power3.out",
             scrollTrigger: {
                 trigger: "#story-carousel",
@@ -228,7 +230,7 @@ function initCarouselSection() {
             end: () => `+=${track.scrollWidth}`,
             pin: true,
             scrub: 1.5,
-            invalidateOnRefresh: true 
+            invalidateOnRefresh: true
         }
     });
 
@@ -244,10 +246,10 @@ function initCarouselSection() {
 
     carouselTl.to(track, {
         x: () => -(track.scrollWidth - window.innerWidth + (window.innerWidth * 0.05)),
-        ease: "none", 
+        ease: "none",
         duration: 4
     }, 0);
-    
+
     carouselTl.to({}, { duration: 0.3 });
 }
 
@@ -284,4 +286,100 @@ function initDetailsSection() {
             ease: "power2.out"
         }, 0);
     });
+}
+
+function initURLPersonalization() {
+    const nameContainer = document.getElementById("custom-family-name");
+    if (!nameContainer) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const guestName = urlParams.get("to");
+
+    if (guestName) {
+        const cleanedName = guestName.trim();
+        window.guestFamilyName = cleanedName;
+        nameContainer.textContent = cleanedName + ", ";
+    } else {
+        window.guestFamilyName = "Invitado Especial";
+    }
+}
+
+function initRSVPFlow() {
+    const btnConfirm = document.getElementById("btn-confirm-rsvp");
+    const btnCalendar = document.getElementById("btn-download-ics");
+    const initialState = document.getElementById("rsvp-initial-state");
+    const successState = document.getElementById("rsvp-success-state");
+
+    if (!btnConfirm) return;
+
+    btnConfirm.addEventListener("click", async () => {
+        btnConfirm.classList.add("is-loading");
+        btnConfirm.querySelector(".btn-text").textContent = "Reservando...";
+
+        try {
+            const { error } = await supabaseClient
+                .from('rsvp')
+                .insert([{ family_name: window.guestFamilyName || "Invitado Web Anónimo" }]);
+
+            if (error) throw error;
+
+            gsap.to(initialState, {
+                opacity: 0,
+                y: -20,
+                duration: 0.4,
+                onComplete: () => {
+                    initialState.style.display = "none";
+                    successState.style.display = "flex";
+
+                    gsap.to(successState, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+
+                    triggerCalendarDownload();
+                }
+            });
+
+        } catch (err) {
+            console.error("Error al confirmar asistencia:", err);
+            alert("Tuvimos un pequeño problema de conexión. Por favor, intenta de nuevo.");
+            btnConfirm.classList.remove("is-loading");
+            btnConfirm.querySelector(".btn-text").textContent = "Sí, allí estaré";
+        }
+    });
+
+    if (btnCalendar) {
+        btnCalendar.addEventListener("click", () => {
+            triggerCalendarDownload();
+        });
+    }
+}
+
+function triggerCalendarDownload() {
+    const icsContent = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Nuestra Boda//Camilo Antonio Ospina Cruz//ES",
+        "BEGIN:VEVENT",
+        "UID:" + Date.now() + "@nuestraboda.com",
+        "DTSTAMP:20260625T000000Z",
+        "DTSTART:20261010T150000",  // Sábado 10 de Octubre de 2026 - 3:00 PM (Hora Local)
+        "DTEND:20261011T020000",    // Estimado de finalización: Domingo 11 de Octubre - 2:00 AM
+        "SUMMARY:Nuestra Boda — Camilo & Olga",
+        "DESCRIPTION:¡Llegó el gran día! Te esperamos para celebrar juntos. Recuerda revisar los detalles de vestimenta y ubicación en nuestra web oficial.",
+        "LOCATION:Hacienda Santa Elena\\, Kilómetro 1.5\\, Vía Cota — Siberia",
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\r\n");
+
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8;" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "boda_camilo.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
