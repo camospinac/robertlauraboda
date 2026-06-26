@@ -4,8 +4,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "hidden";
-    
-    // 1. Declaración de Elementos del DOM
+
     const textElement = document.getElementById("welcome-text");
     const btnStart = document.getElementById("btn-start-experience");
     const triggerContainer = document.getElementById("trigger-container");
@@ -19,8 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "está por comenzar"
     ];
     gsap.set(textElement, { opacity: 0, y: 10 });
-
-    // ─── LÓGICA DEL BUCLE INFINITO DE FOTOS (Fase de Espera) ───
     let currentSlideIndex = 0;
     let slideshowTimeline;
 
@@ -34,8 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const nextSlide = slides[currentSlideIndex];
 
             slideshowTimeline = gsap.timeline({ onComplete: crossfade });
-
-            // Desvanecer la foto actual
             slideshowTimeline.to(currentSlide, { 
                 opacity: 0, 
                 duration: 1.5, 
@@ -56,9 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     startMemoriesSlideshow();
+    gsap.set("#rings-svg", { opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
-    
+    tl.set("#rings-svg", { opacity: 1 });
+
     const paths = document.querySelectorAll(".draw-path");
     paths.forEach(path => {
         const length = path.getTotalLength();
@@ -107,8 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ease: "power2.out"
     });
 
-    tl.set(".main-content", { autoAlpha: 1 });
-
     tl.to(".preloader", {
         y: "-100vh",
         borderBottomLeftRadius: "50% 15vh",
@@ -124,25 +119,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-
-    // ─── 3. INTERCEPTOR DEL CLICK CON FLASH FORWARD CINEMATOGRÁFICO ───
     if (btnStart) {
         btnStart.addEventListener("click", () => {
-            // A. Disparar audio nativo
+            
             if (music) {
                 music.play().catch(err => {
                     console.log("Audio bloqueado por directiva del navegador:", err);
                 });
             }
 
-            // B. Congelar y matar el slideshow lento de recuerdos
             if (slideshowTimeline) slideshowTimeline.kill();
             gsap.killTweensOf(slides);
 
-            // C. Timeline de transición rápida (Desvanece botón + Flash de recuerdos)
             const transitionTl = gsap.timeline();
 
-            // Desvanecer el botón de entrar
             transitionTl.to(triggerContainer, { 
                 opacity: 0, 
                 y: 15, 
@@ -151,9 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 onComplete: () => { if (triggerContainer) triggerContainer.style.display = "none"; }
             });
 
-            // ¡EL FLASH FORWARD! Recorre todas las fotos súper rápido para crear clímax
             if (slides.length > 0) {
-                // Forzamos opacidad cero inicial en ráfaga
                 transitionTl.set(slides, { opacity: 0, scale: 1.05 });
                 
                 slides.forEach((slide) => {
@@ -162,13 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // D. Limpiar el fondo regresando a verde oliva puro y arrancar tus anillos
             transitionTl.to(".preloader-memories", { 
                 opacity: 0, 
                 duration: 0.5, 
                 ease: "power2.out",
                 onComplete: () => {
-                    // Arrancar el flujo de los anillos SVG y textos poéticos
                     tl.play();
                 }
             });
@@ -177,6 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initHeroAnimation() {
+    gsap.set(".hero-top, .hero-bottom", { opacity: 0, y: 15 });
+    gsap.set("#amp", { opacity: 0, scale: 0.9 });
     gsap.set(".main-content", { autoAlpha: 1 });
 
     const tl = gsap.timeline({ delay: 0.2 });
@@ -187,17 +175,9 @@ function initHeroAnimation() {
         ease: "power4.out",
         stagger: 0.12
     })
+    .to("#amp", { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }, "-=1.0");
 
-        .fromTo("#amp",
-            { opacity: 0, scale: 0.9 },
-            { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" },
-            "-=1.0"
-        );
-
-    gsap.fromTo(".hero-top, .hero-bottom",
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.6 }
-    );
+    gsap.to(".hero-top, .hero-bottom", { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.6 });
 
     initURLPersonalization();
     initRSVPFlow();
