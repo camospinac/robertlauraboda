@@ -1,7 +1,16 @@
 gsap.registerPlugin(ScrollTrigger);
 
+gsap.registerPlugin(ScrollTrigger);
+
 document.addEventListener("DOMContentLoaded", () => {
+    document.body.style.overflow = "hidden";
+    
+    // 1. Declaración de Elementos del DOM
     const textElement = document.getElementById("welcome-text");
+    const btnStart = document.getElementById("btn-start-experience");
+    const triggerContainer = document.getElementById("trigger-container");
+    const music = document.getElementById("bg-music");
+    const slides = document.querySelectorAll(".memory-slide");
 
     const textGroups = [
         "Hola,",
@@ -11,7 +20,45 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
     gsap.set(textElement, { opacity: 0, y: 10 });
 
-    const tl = gsap.timeline();
+    // ─── LÓGICA DEL BUCLE INFINITO DE FOTOS (Fase de Espera) ───
+    let currentSlideIndex = 0;
+    let slideshowTimeline;
+
+    function startMemoriesSlideshow() {
+        if (slides.length === 0) return;
+        gsap.set(slides, { opacity: 0, scale: 1 });
+        
+        function crossfade() {
+            const currentSlide = slides[currentSlideIndex];
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            const nextSlide = slides[currentSlideIndex];
+
+            slideshowTimeline = gsap.timeline({ onComplete: crossfade });
+
+            // Desvanecer la foto actual
+            slideshowTimeline.to(currentSlide, { 
+                opacity: 0, 
+                duration: 1.5, 
+                ease: "power1.inOut" 
+            });
+
+            slideshowTimeline.fromTo(nextSlide, 
+                { opacity: 0, scale: 1.02 },
+                { opacity: 0.45, scale: 1.08, duration: 5.0, ease: "linear" },
+                "-=1.5"
+            );
+        }
+
+        gsap.fromTo(slides[0], 
+            { opacity: 0, scale: 1.02 },
+            { opacity: 0.45, scale: 1.08, duration: 5.0, ease: "linear", onComplete: crossfade }
+        );
+    }
+
+    startMemoriesSlideshow();
+
+    const tl = gsap.timeline({ paused: true });
+    
     const paths = document.querySelectorAll(".draw-path");
     paths.forEach(path => {
         const length = path.getTotalLength();
@@ -60,6 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ease: "power2.out"
     });
 
+    tl.set(".main-content", { autoAlpha: 1 });
+
     tl.to(".preloader", {
         y: "-100vh",
         borderBottomLeftRadius: "50% 15vh",
@@ -67,12 +116,64 @@ document.addEventListener("DOMContentLoaded", () => {
         duration: 1.2,
         ease: "power3.inOut",
         onComplete: () => {
-            document.getElementById("preloader").remove();
+            const preloaderEl = document.getElementById("preloader");
+            if (preloaderEl) preloaderEl.remove();
             document.body.style.overflow = "auto";
 
             initHeroAnimation();
         }
     });
+
+
+    // ─── 3. INTERCEPTOR DEL CLICK CON FLASH FORWARD CINEMATOGRÁFICO ───
+    if (btnStart) {
+        btnStart.addEventListener("click", () => {
+            // A. Disparar audio nativo
+            if (music) {
+                music.play().catch(err => {
+                    console.log("Audio bloqueado por directiva del navegador:", err);
+                });
+            }
+
+            // B. Congelar y matar el slideshow lento de recuerdos
+            if (slideshowTimeline) slideshowTimeline.kill();
+            gsap.killTweensOf(slides);
+
+            // C. Timeline de transición rápida (Desvanece botón + Flash de recuerdos)
+            const transitionTl = gsap.timeline();
+
+            // Desvanecer el botón de entrar
+            transitionTl.to(triggerContainer, { 
+                opacity: 0, 
+                y: 15, 
+                duration: 0.4, 
+                ease: "power2.in",
+                onComplete: () => { if (triggerContainer) triggerContainer.style.display = "none"; }
+            });
+
+            // ¡EL FLASH FORWARD! Recorre todas las fotos súper rápido para crear clímax
+            if (slides.length > 0) {
+                // Forzamos opacidad cero inicial en ráfaga
+                transitionTl.set(slides, { opacity: 0, scale: 1.05 });
+                
+                slides.forEach((slide) => {
+                    transitionTl.to(slide, { opacity: 0.5, duration: 0.12, ease: "power1.inOut" })
+                                 .to(slide, { opacity: 0, duration: 0.12 });
+                });
+            }
+
+            // D. Limpiar el fondo regresando a verde oliva puro y arrancar tus anillos
+            transitionTl.to(".preloader-memories", { 
+                opacity: 0, 
+                duration: 0.5, 
+                ease: "power2.out",
+                onComplete: () => {
+                    // Arrancar el flujo de los anillos SVG y textos poéticos
+                    tl.play();
+                }
+            });
+        });
+    }
 });
 
 function initHeroAnimation() {
@@ -104,6 +205,20 @@ function initHeroAnimation() {
     initEditorialSection();
     initCarouselSection();
     initDetailsSection();
+    initAudioControl()
+
+    gsap.to("#scroll-hint", {
+        autoAlpha: 1,
+        duration: 0.8,
+        delay: 1.2
+    });
+
+    ScrollTrigger.create({
+        trigger: "#wedding-details-wrapper",
+        start: "top 75%",
+        onEnter: () => gsap.to("#scroll-hint", { autoAlpha: 0, duration: 0.4 }),
+        onLeaveBack: () => gsap.to("#scroll-hint", { autoAlpha: 1, duration: 0.4 })
+    });
 }
 
 function initEditorialSection() {
@@ -382,4 +497,21 @@ function triggerCalendarDownload() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+function initAudioControl() {
+    const audioBtn = document.getElementById("audio-control");
+    const music = document.getElementById("bg-music");
+
+    if (!audioBtn || !music) return;
+
+    audioBtn.addEventListener("click", () => {
+        if (music.paused) {
+            music.play().catch(err => console.log("Error al reproducir:", err));
+            audioBtn.classList.remove("is-paused");
+        } else {
+            music.pause();
+            audioBtn.classList.add("is-paused");
+        }
+    });
 }
