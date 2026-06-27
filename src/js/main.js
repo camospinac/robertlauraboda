@@ -460,7 +460,7 @@ function triggerCalendarDownload() {
         "BEGIN:VEVENT",
         "UID:" + Date.now() + "@nuestraboda.com",
         "DTSTAMP:20260625T000000Z",
-        "DTSTART:20261010T150000",
+        "DTSTART:20261010T160000",
         "DTEND:20261011T020000",
         "SUMMARY:Nuestra Boda — Robert & Laura",
         "DESCRIPTION:¡Llegó el gran día! Te esperamos para celebrar juntos. Recuerda revisar los detalles de vestimenta y ubicación en nuestra web oficial.",
