@@ -409,8 +409,6 @@ async function initRSVPFlow() {
     const statusState = document.getElementById("rsvp-status-state");
     const statusTitle = document.getElementById("status-title");
     const statusText = document.getElementById("status-text");
-
-    // Ambos contenedores de arrepentimiento declarados
     const undoYes = document.getElementById("undo-link-yes");
     const undoWrapperYes = document.getElementById("undo-wrapper-yes");
     const undoNo = document.getElementById("undo-link-no");
@@ -433,7 +431,6 @@ async function initRSVPFlow() {
         });
     }
 
-    // ─── FASE 1: CONTROL DE FECHA LÍMITE ───
     if (today >= deadlineDate) {
         if (initialState) {
             initialState.style.display = "none";
@@ -448,7 +445,6 @@ async function initRSVPFlow() {
 
     if (!btnYes || !btnNo) return;
 
-    // ─── FASE 2: CHEQUEO SILENCIOSO (Pailas al refrescar para ambos) ───
     try {
         const { data, error } = await supabaseClient
             .from('rsvp')
@@ -464,7 +460,6 @@ async function initRSVPFlow() {
             if (data.attendance === "SI") {
                 successState.style.display = "flex";
                 successState.style.opacity = "1";
-                // Al refrescar, undoWrapperYes se queda con su display: none de fábrica. ¡Bloqueado!
             } else {
                 statusState.style.display = "flex";
                 statusState.style.opacity = "1";
@@ -476,7 +471,6 @@ async function initRSVPFlow() {
         console.error("Error al verificar base de datos:", err);
     }
 
-    // ─── FASE 3: OPERACIÓN UPSERT DE ENVÍO ───
     async function executeRSVP(attendanceValue, targetButton, originalLabel) {
         targetButton.classList.add("is-loading");
         targetButton.querySelector(".btn-text").textContent = "Procesando...";
@@ -495,7 +489,6 @@ async function initRSVPFlow() {
             if (error) throw error;
 
             if (attendanceValue === "SI") {
-                // Habilitamos el deshacer del SÍ únicamente para esta sesión en caliente
                 if (undoWrapperYes) undoWrapperYes.style.display = "block";
                 
                 transitionState(initialState, successState);
@@ -503,8 +496,6 @@ async function initRSVPFlow() {
             } else {
                 statusTitle.textContent = "Respuesta Guardada";
                 statusText.innerHTML = `Hemos registrado tu respuesta. Lamentamos mucho que no puedas acompañarnos en el altar, se te extrañará un montón en la celebración.`;
-                
-                // Habilitamos el deshacer del NO únicamente para esta sesión en caliente
                 if (undoWrapperNo) undoWrapperNo.style.display = "block";
                 
                 transitionState(initialState, statusState);
@@ -521,7 +512,6 @@ async function initRSVPFlow() {
         }
     }
 
-    // ─── FASE 4: CONTROL DE ARREPENTIMIENTO VISUAL ───
     function handleUndo(currentState) {
         btnYes.disabled = false;
         btnNo.disabled = false;
@@ -533,11 +523,9 @@ async function initRSVPFlow() {
         transitionState(currentState, initialState);
     }
 
-    // Listeners principales
     btnYes.addEventListener("click", () => executeRSVP("SI", btnYes, "Sí, allí estaré"));
     btnNo.addEventListener("click", () => executeRSVP("NO", btnNo, "No podré asistir"));
 
-    // Listeners de deshacer en caliente
     if (undoYes) {
         undoYes.addEventListener("click", () => handleUndo(successState));
     }
