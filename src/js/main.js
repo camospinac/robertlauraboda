@@ -12,10 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const slides = document.querySelectorAll(".memory-slide");
 
     const textGroups = [
-        "Hola,",
-        "el mejor capítulo",
-        "de nuestras vidas",
-        "está por comenzar"
+        "Hola,"
+        // "el mejor capítulo",
+        // "de nuestras vidas",
+        // "está por comenzar"
     ];
     gsap.set(textElement, { opacity: 0, y: 10 });
     let currentSlideIndex = 0;
@@ -213,7 +213,7 @@ function initEditorialSection() {
     });
 
     gsap.to(".line-right", {
-        xPercent: 20,
+        xPercent: 25,
         ease: "none",
         scrollTrigger: {
             trigger: "#story-editorial",
@@ -224,7 +224,7 @@ function initEditorialSection() {
     });
 
     gsap.to(".line-left", {
-        xPercent: -20,
+        xPercent: -25,
         ease: "none",
         scrollTrigger: {
             trigger: "#story-editorial",
@@ -235,11 +235,11 @@ function initEditorialSection() {
     });
 
     const photosConfig = [
-        { selector: ".photo-1", yPercent: -40 },
-        { selector: ".photo-2", yPercent: -120 },
-        { selector: ".photo-3", yPercent: -50 },
-        { selector: ".photo-4", yPercent: -140 },
-        { selector: ".photo-5", yPercent: -70 }
+        { selector: ".photo-1", yPercent: -35 }, 
+        { selector: ".photo-2", yPercent: -65 },
+        { selector: ".photo-3", yPercent: -45 },
+        { selector: ".photo-4", yPercent: -85 },
+        { selector: ".photo-5", yPercent: -60 }
     ];
 
     photosConfig.forEach(photo => {
@@ -399,51 +399,151 @@ function initURLPersonalization() {
     }
 }
 
-function initRSVPFlow() {
-    const btnConfirm = document.getElementById("btn-confirm-rsvp");
+async function initRSVPFlow() {
+    const btnYes = document.getElementById("btn-confirm-yes");
+    const btnNo = document.getElementById("btn-confirm-no");
     const btnCalendar = document.getElementById("btn-download-ics");
+    
     const initialState = document.getElementById("rsvp-initial-state");
     const successState = document.getElementById("rsvp-success-state");
+    const statusState = document.getElementById("rsvp-status-state");
+    const statusTitle = document.getElementById("status-title");
+    const statusText = document.getElementById("status-text");
 
-    if (!btnConfirm) return;
+    // Ambos contenedores de arrepentimiento declarados
+    const undoYes = document.getElementById("undo-link-yes");
+    const undoWrapperYes = document.getElementById("undo-wrapper-yes");
+    const undoNo = document.getElementById("undo-link-no");
+    const undoWrapperNo = document.getElementById("undo-wrapper-no");
 
-    btnConfirm.addEventListener("click", async () => {
-        btnConfirm.classList.add("is-loading");
-        btnConfirm.querySelector(".btn-text").textContent = "Reservando...";
+    const guestName = window.guestFamilyName || "Invitado Web Anónimo";
+    const deadlineDate = new Date("2026-08-31T00:00:00");
+    const today = new Date();
+
+    function transitionState(fromEl, toEl) {
+        gsap.to(fromEl, {
+            opacity: 0,
+            y: -15,
+            duration: 0.4,
+            onComplete: () => {
+                fromEl.style.display = "none";
+                toEl.style.display = "flex";
+                gsap.fromTo(toEl, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
+            }
+        });
+    }
+
+    // ─── FASE 1: CONTROL DE FECHA LÍMITE ───
+    if (today >= deadlineDate) {
+        if (initialState) {
+            initialState.style.display = "none";
+            statusState.style.display = "flex";
+            statusState.style.opacity = "1";
+            statusTitle.textContent = "Confirmaciones Cerradas";
+            statusTitle.style.color = "#8A9A86";
+            statusText.innerHTML = `El plazo para la confirmación digital expiró el <strong>30 de Agosto de 2026</strong>. Si tienes alguna novedad de último momento, por favor comunícate directamente con los novios.`;
+        }
+        return;
+    }
+
+    if (!btnYes || !btnNo) return;
+
+    // ─── FASE 2: CHEQUEO SILENCIOSO (Pailas al refrescar para ambos) ───
+    try {
+        const { data, error } = await supabaseClient
+            .from('rsvp')
+            .select('attendance')
+            .eq('family_name', guestName)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (data) {
+            initialState.style.display = "none";
+            
+            if (data.attendance === "SI") {
+                successState.style.display = "flex";
+                successState.style.opacity = "1";
+                // Al refrescar, undoWrapperYes se queda con su display: none de fábrica. ¡Bloqueado!
+            } else {
+                statusState.style.display = "flex";
+                statusState.style.opacity = "1";
+                statusTitle.textContent = "Agradecemos tu respuesta";
+                statusText.innerHTML = `Hemos registrado previamente que <strong>no podrás asistir</strong> a la celebración. Si tus planes cambiaron y deseas acompañarnos, comunícate con Robert o Laura para reservar tu cupo manualmente.`;
+            }
+        }
+    } catch (err) {
+        console.error("Error al verificar base de datos:", err);
+    }
+
+    // ─── FASE 3: OPERACIÓN UPSERT DE ENVÍO ───
+    async function executeRSVP(attendanceValue, targetButton, originalLabel) {
+        targetButton.classList.add("is-loading");
+        targetButton.querySelector(".btn-text").textContent = "Procesando...";
+        
+        btnYes.disabled = true;
+        btnNo.disabled = true;
 
         try {
             const { error } = await supabaseClient
                 .from('rsvp')
-                .insert([{ family_name: window.guestFamilyName || "Invitado Web Anónimo" }]);
+                .upsert(
+                    { family_name: guestName, attendance: attendanceValue },
+                    { onConflict: 'family_name' }
+                );
 
             if (error) throw error;
 
-            gsap.to(initialState, {
-                opacity: 0,
-                y: -20,
-                duration: 0.4,
-                onComplete: () => {
-                    initialState.style.display = "none";
-                    successState.style.display = "flex";
-
-                    gsap.to(successState, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.5,
-                        ease: "power2.out"
-                    });
-
-                    triggerCalendarDownload();
-                }
-            });
+            if (attendanceValue === "SI") {
+                // Habilitamos el deshacer del SÍ únicamente para esta sesión en caliente
+                if (undoWrapperYes) undoWrapperYes.style.display = "block";
+                
+                transitionState(initialState, successState);
+                triggerCalendarDownload();
+            } else {
+                statusTitle.textContent = "Respuesta Guardada";
+                statusText.innerHTML = `Hemos registrado tu respuesta. Lamentamos mucho que no puedas acompañarnos en el altar, se te extrañará un montón en la celebración.`;
+                
+                // Habilitamos el deshacer del NO únicamente para esta sesión en caliente
+                if (undoWrapperNo) undoWrapperNo.style.display = "block";
+                
+                transitionState(initialState, statusState);
+            }
 
         } catch (err) {
-            console.error("Error al confirmar asistencia:", err);
-            alert("Tuvimos un pequeño problema de conexión. Por favor, intenta de nuevo.");
-            btnConfirm.classList.remove("is-loading");
-            btnConfirm.querySelector(".btn-text").textContent = "Sí, allí estaré";
+            console.error("Error crítico en transacción RSVP:", err);
+            alert("Tuvimos un percance al sincronizar tu respuesta. Por favor, intenta de nuevo.");
+            
+            targetButton.classList.remove("is-loading");
+            targetButton.querySelector(".btn-text").textContent = originalLabel;
+            btnYes.disabled = false;
+            btnNo.disabled = false;
         }
-    });
+    }
+
+    // ─── FASE 4: CONTROL DE ARREPENTIMIENTO VISUAL ───
+    function handleUndo(currentState) {
+        btnYes.disabled = false;
+        btnNo.disabled = false;
+        btnYes.classList.remove("is-loading");
+        btnNo.classList.remove("is-loading");
+        document.getElementById("btn-confirm-yes").querySelector(".btn-text").textContent = "Sí, allí estaré";
+        document.getElementById("btn-confirm-no").querySelector(".btn-text").textContent = "No podré asistir";
+
+        transitionState(currentState, initialState);
+    }
+
+    // Listeners principales
+    btnYes.addEventListener("click", () => executeRSVP("SI", btnYes, "Sí, allí estaré"));
+    btnNo.addEventListener("click", () => executeRSVP("NO", btnNo, "No podré asistir"));
+
+    // Listeners de deshacer en caliente
+    if (undoYes) {
+        undoYes.addEventListener("click", () => handleUndo(successState));
+    }
+    if (undoNo) {
+        undoNo.addEventListener("click", () => handleUndo(statusState));
+    }
 
     if (btnCalendar) {
         btnCalendar.addEventListener("click", () => {
