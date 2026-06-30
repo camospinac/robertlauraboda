@@ -12,10 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const slides = document.querySelectorAll(".memory-slide");
 
     const textGroups = [
-        "Hola,"
-        // "el mejor capítulo",
-        // "de nuestras vidas",
-        // "está por comenzar"
+        "Hola,",
+        "el mejor capítulo",
+        "de nuestras vidas",
+        "está por comenzar"
     ];
     gsap.set(textElement, { opacity: 0, y: 10 });
     let currentSlideIndex = 0;
@@ -551,7 +551,7 @@ function triggerCalendarDownload() {
         "DTSTART:20261010T160000",
         "DTEND:20261011T020000",
         "SUMMARY:Nuestra Boda — Robert & Laura",
-        "DESCRIPTION:¡Llegó el gran día! Te esperamos para celebrar juntos. Recuerda revisar los detalles de vestimenta y ubicación en nuestra web oficial.",
+        "DESCRIPTION:¡Llegó el gran día! Te esperamos para celebrar juntos. Recuerda revisar los detalles de vestimenta y ubicación en nuestra web oficial.\\n\\nRegalo: Luvia de sobres.\\n\\n¡GRACIAS POR ACOMPAÑARNOS!",
         "LOCATION:Hacienda Santa Elena\\, Kilómetro 1.5\\, Vía Cota — Siberia",
         "END:VEVENT",
         "END:VCALENDAR"
